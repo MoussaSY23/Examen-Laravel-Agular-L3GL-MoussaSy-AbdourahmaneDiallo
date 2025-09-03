@@ -17,7 +17,11 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'in:admin,employee,client'
+            'role' => 'in:admin,employee,client|default:client',
+            'telephone' => 'nullable|string|max:20',
+            'adresse' => 'nullable|string|max:255',
+            'ville' => 'nullable|string|max:100',
+            'avatar' => 'nullable|string|max:255'
         ];
     }
 }

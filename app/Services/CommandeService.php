@@ -19,38 +19,48 @@ class CommandeService
         return Commande::with('produits')->find($id);
     }
 
-    public function creer(array $data): Commande
+    public function creer(array $validatedData): Commande
     {
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($validatedData) {
+            // Création de la commande avec les données validées
             $commande = Commande::create([
-                'user_id' => $data['user_id'],
-                'mode_paiement' => $data['mode_paiement'],
-                'adresse_livraison' => $data['adresse_livraison'],
-                'notes' => $data['notes'] ?? null,
-                'total' => 0
-
+                'user_id' => $validatedData['user_id'],
+                'mode_paiement' => $validatedData['mode_paiement'],
+                'adresse_livraison' => $validatedData['adresse_livraison'],
+                'notes' => $validatedData['notes'] ?? null,
+                'total' => 0,
+                'statut' => 'en_preparation' // Statut par défaut
             ]);
 
             $total = 0;
 
-            foreach ($data['produits'] as $p) {
-                $produit = Produit::findOrFail($p['produit_id']);
-                $prix_total = $produit->prixFinal() * $p['quantite'];
+            // Traitement des produits de la commande
+            foreach ($validatedData['produits'] as $produitData) {
+                $produit = Produit::findOrFail($produitData['produit_id']);
+                $prix_total = $produit->prixFinal() * $produitData['quantite'];
                 $total += $prix_total;
 
+                // Ajout du produit à la commande avec les détails de prix
                 $commande->produits()->attach($produit->id, [
-                    'quantite' => $p['quantite'],
+                    'quantite' => $produitData['quantite'],
                     'prix_unitaire' => $produit->prixFinal(),
                     'prix_total' => $prix_total,
                 ]);
+
+                // Mise à jour du stock du produit
+                $produit->decrement('stock', $produitData['quantite']);
             }
 
+            // Mise à jour du total de la commande
             $commande->update([
                 'total' => $total,
-             // TVA à gérer plus tard
+                'date_commande' => now(),
+                'date_livraison_estimee' => now()->addDays(3) // Exemple: livraison dans 3 jours
             ]);
 
-            return $commande;
+            // TODO: Ajouter la gestion de la TVA si nécessaire
+
+            return $commande->load('produits'); // Retourne la commande avec les produits chargés
         });
     }
 

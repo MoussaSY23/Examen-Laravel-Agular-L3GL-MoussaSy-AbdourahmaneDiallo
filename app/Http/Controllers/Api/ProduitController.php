@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Http\Requests\StoreProduitRequest;
 use App\Http\Requests\UpdateProduitRequest;
 use App\Models\Produit;
 use App\Services\ProduitService;
 use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+
 
 class ProduitController extends Controller
 {

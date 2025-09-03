@@ -6,6 +6,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -24,22 +25,50 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $result = $this->userService->login($request->email, $request->password);
+        $credentials = $request->only('email', 'password');
 
-        if (!$result) {
-            return response()->json(['message' => 'Identifiants invalides'], 401);
+        try {
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Identifiants invalides',
+                ], 401);
+            }
+
+            $user = auth()->user();
+            
+            // Vérifier si l'utilisateur est actif (ajoutez cette logique si nécessaire)
+            // if (!$user->is_active) {
+            //     return response()->json([
+            //         'status' => 'error',
+            //         'message' => 'Votre compte est désactivé',
+            //     ], 401);
+            // }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Connexion réussie',
+                'token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => auth('api')->factory()->getTTL() * 60, // en secondes
+                'user' => $user
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la connexion: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Une erreur est survenue lors de la connexion',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
         }
-
-        return response()->json([
-            'message' => 'Connexion réussie',
-            'token' => $result['token'],
-            'user' => $result['user']
-        ]);
     }
 
     public function logout(Request $request)
     {
-        $this->userService->logout($request->user());
+        JWTAuth::invalidate(JWTAuth::getToken()); // Invalider le token JWT
         return response()->json(['message' => 'Déconnexion réussie']);
     }
+
+
 }
