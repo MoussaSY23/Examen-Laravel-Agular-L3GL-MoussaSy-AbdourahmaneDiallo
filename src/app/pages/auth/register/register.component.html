@@ -1,0 +1,80 @@
+<div class="register-container">
+  <div class="register-card">
+    <h2>Créer un compte</h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+      <!-- Nom -->
+      <div class="form-group">
+        <label for="name">Nom complet</label>
+        <input id="name" type="text" formControlName="name" placeholder="Entrez votre nom complet">
+        <div class="error" *ngIf="registerForm.get('name')?.touched && registerForm.get('name')?.invalid">
+          Le nom est obligatoire (min. 3 caractères).
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Adresse Email</label>
+        <input id="email" type="email" formControlName="email" placeholder="exemple@mail.com">
+        <div class="error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+          Email invalide.
+        </div>
+      </div>
+
+      <!-- Téléphone -->
+      <div class="form-group">
+        <label for="telephone">Téléphone</label>
+        <input id="telephone" type="text" formControlName="telephone" placeholder="+221 77 123 45 67">
+      </div>
+
+      <!-- Adresse -->
+      <div class="form-group">
+        <label for="adresse">Adresse</label>
+        <input id="adresse" type="text" formControlName="adresse" placeholder="Rue 123, Dakar">
+      </div>
+
+      <!-- Ville -->
+      <div class="form-group">
+        <label for="ville">Ville</label>
+        <input id="ville" type="text" formControlName="ville" placeholder="Dakar">
+      </div>
+
+      <!-- Avatar -->
+      <div class="form-group">
+        <label for="avatar">Avatar (URL)</label>
+        <input id="avatar" type="text" formControlName="avatar" placeholder="http://image.com/avatar.png">
+      </div>
+
+      <!-- Mot de passe -->
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input id="password" type="password" formControlName="password">
+      </div>
+
+      <!-- Confirmation -->
+      <div class="form-group">
+        <label for="password_confirmation">Confirmer le mot de passe</label>
+        <input id="password_confirmation" type="password" formControlName="password_confirmation">
+        <div class="error" *ngIf="registerForm.hasError('notSame') && registerForm.get('password_confirmation')?.touched">
+          Les mots de passe ne correspondent pas.
+        </div>
+      </div>
+
+      <!-- Bouton -->
+      <button type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Inscription...' : 'S\'inscrire' }}
+      </button>
+
+      <!-- Messages -->
+      <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
+      <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    </form>
+
+    <p class="link">
+      Déjà un compte ?
+      <a routerLink="/auth/Connexion">Se connecter</a>
+    </p>
+  </div>
+</div>

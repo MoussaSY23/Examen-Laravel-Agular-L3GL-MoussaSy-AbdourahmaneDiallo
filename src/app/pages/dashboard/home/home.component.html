@@ -1,0 +1,256 @@
+<!-- Header/Navigation -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <div class="brand-icon"></div>
+      <span class="brand-text">Boulangerie Artisanale</span>
+    </div>
+    <div class="nav-menu">
+      <a href="#" class="nav-link" routerLink="/home">Accueil</a>
+      <a href="#" class="nav-link" routerLink="/service">Services</a>
+      <a href="#" class="nav-link" routerLink="/Apropos">À propos</a>
+      <div class="nav-buttons">
+        <button class="nav-btn login-btn" routerLink="/auth/Connexion">Se connecter</button>
+        <button class="nav-btn signup-btn" routerLink="/auth/Inscription">S'inscrire</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-overlay">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-icon">👨‍🍳</span>
+        <span>Tradition artisanale depuis 1985</span>
+      </div>
+      
+      <h1 class="hero-title">
+        Votre boulangerie<br>
+        <span class="gradient-text">artisanale en ligne</span>
+      </h1>
+      
+      <p class="hero-subtitle">
+        Découvrez l'authenticité du savoir-faire français avec nos produits<br>
+        frais, préparés chaque jour et livrés directement chez vous.
+      </p>
+      
+      <div class="hero-buttons">
+        <button class="btn btn-primary" routerLink="/auth/Connexion">Se connecter →</button>
+        <button class="btn btn-secondary" routerLink="/auth/Inscription">S'inscrire</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Rating Bar -->
+<div class="rating-bar">
+  <div class="rating-content">
+    <div class="stars">
+      <span class="star">⭐</span>
+      <span class="star">⭐</span>
+      <span class="star">⭐</span>
+      <span class="star">⭐</span>
+      <span class="star">⭐</span>
+    </div>
+    <span class="rating-text">4.9/5 sur 2,340 avis</span>
+    <div class="delivery-info">
+      <span class="delivery-icon">🕒</span>
+      <span>Livraison en 30min</span>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Advantages Section -->
+<section class="advantages-section">
+  <div class="container">
+    <div class="advantages-grid">
+      <div class="advantage-card">
+        <div class="advantage-icon">
+          <span>🚚</span>
+        </div>
+        <h3>Livraison gratuite</h3>
+        <p>Dès 25€ d'achat dans un rayon de 5km</p>
+      </div>
+      
+      <div class="advantage-card">
+        <div class="advantage-icon">
+          <span>🌅</span>
+        </div>
+        <h3>Produits frais</h3>
+        <p>Préparés chaque matin dès 4h00</p>
+      </div>
+      
+      <div class="advantage-card">
+        <div class="advantage-icon">
+          <span>✅</span>
+        </div>
+        <h3>Qualité garantie</h3>
+        <p>Ingrédients sélectionnés avec soin</p>
+      </div>
+      
+      <div class="advantage-card">
+        <div class="advantage-icon">
+          <span>😊</span>
+        </div>
+        <h3>Satisfaction client</h3>
+        <p>Plus de 1000 clients satisfaits</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Produits Section -->
+<section class="produits-section">
+  <div class="container">
+    <h2 class="section-title">Nos délicieuses pâtisseries</h2>
+    <p class="section-subtitle">Découvrez notre sélection de produits frais faits maison</p>
+    
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="loader"></div>
+      <p>Chargement des produits...</p>
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+      <button (click)="chargerProduits()" class="btn btn-primary">Réessayer</button>
+    </div>
+
+    <!-- Slider pour mobile -->
+    <div class="produits-slider-container mobile-only" *ngIf="!isLoading && !error">
+      <div class="slider-controls">
+        <button class="slider-btn prev" (click)="scrollSlider(-1)">‹</button>
+        <button class="slider-btn next" (click)="scrollSlider(1)">›</button>
+      </div>
+      
+      <div class="produits-slider" #slider>
+        <div *ngFor="let produit of produits" class="produit-card">
+          <div class="produit-badge" *ngIf="estEnPromotion(produit)">Promo</div>
+          <div class="produit-image">
+            <img [src]="produit.image_principale || '../../../../assets/istockphoto-960924058-612x612.jpg'" [alt]="produit.nom">
+          </div>
+          <div class="produit-content">
+            <h3 class="produit-titre">{{ produit.nom }}</h3>
+            <p class="produit-description">{{ produit.description  }}</p>
+            <div class="produit-prix">
+              <span class="prix-actuel">{{ getPrixAffichage(produit) | currency:'XOF':'symbol':'1.0-0' }} FCFA</span>
+              <span class="prix-original" *ngIf="estEnPromotion(produit)">{{ produit.prix | currency:'XOF':'symbol':'1.0-0' }} FCFA</span>
+            </div>
+            <div class="produit-stock" [class.en-stock]="produit.stock > 0" [class.rupture]="produit.stock <= 0">
+              {{ produit.stock > 0 ? 'En stock' : 'Rupture' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grille pour desktop (3 lignes) -->
+    <div class="produits-grid desktop-only" *ngIf="!isLoading && !error">
+      <div *ngFor="let produit of produits" class="produit-card">
+        <div class="produit-badge" *ngIf="estEnPromotion(produit)">Promo</div>
+        <div class="produit-image">
+          <img [src]="produit.image_principale || '../../../../assets/istockphoto-960924058-612x612.jpg'" [alt]="produit.nom">
+        </div>
+        <div class="produit-content">
+          <h3 class="produit-titre">{{ produit.nom }}</h3>
+          <p class="produit-description">{{ produit.description  }}</p>
+          <div class="produit-prix">
+            <span class="prix-actuel">{{ getPrixAffichage(produit) | currency:'XOF':'symbol':'1.0-0' }} FCFA</span>
+            <span class="prix-original" *ngIf="estEnPromotion(produit)">{{ produit.prix | currency:'XOF':'symbol':'1.0-0' }} FCFA</span>
+          </div>
+          <div class="produit-stock" [class.en-stock]="produit.stock > 0" [class.rupture]="produit.stock <= 0">
+            {{ produit.stock > 0 ? 'En stock' : 'Rupture' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+  <div class="container">
+    <h2 class="section-title">Ce que disent nos clients</h2>
+    <p class="section-subtitle">Des témoignages authentiques qui parlent de notre savoir-faire</p>
+    
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <span>✿</span><span>✿</span><span>✿</span><span>✿</span><span>✿</span>
+        </div>
+        <p class="testimonial-text">
+          "La meilleure boulangerie du quartier ! Leurs croissants sont un délice et l'équipe est toujours souriante."
+        </p>
+        <div class="testimonial-author">— Sophie L.</div>
+      </div>
+      
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <span>✿</span><span>✿</span><span>✿</span><span>✿</span><span>✿</span>
+        </div>
+        <p class="testimonial-text">
+          "Pain authentique et service impeccable. Je recommande vivement, surtout leur baguette tradition !"
+        </p>
+        <div class="testimonial-author">— Marc D.</div>
+      </div>
+      
+      <div class="testimonial-card">
+        <div class="testimonial-stars">
+          <span>✿</span><span>✿</span><span>✿</span><span>✿</span><span>✿</span>
+        </div>
+        <p class="testimonial-text">
+          "La livraison rapide et produits toujours frais. Leurs pâtisseries sont des œuvres d'art gustatives."
+        </p>
+        <div class="testimonial-author">— Claire M.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter Section -->
+
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="brand-icon">🌾</div>
+        <span class="brand-text">Boulangerie Artisanale</span>
+        <p>L'art du pain depuis 1985</p>
+      </div>
+      
+      <div class="footer-links">
+        <div class="footer-column">
+          <h3>Navigation</h3>
+          <a href="#">Accueil</a>
+          <a href="#">Services</a>
+          <a href="#">À propos</a>
+          <a href="#">Contact</a>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Informations</h3>
+          <a href="#">Conditions générales</a>
+          <a href="#">Politique de confidentialité</a>
+          <a href="#">Mentions légales</a>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Contact</h3>
+          <p>📞 +221 77 123 45 67</p>
+          <p></p>
+          <p>📍 Dakar, Sénégal</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>© 2023 Boulangerie Artisanale. Tous droits réservés.</p>
+    </div>
+  </div>
+</footer>
