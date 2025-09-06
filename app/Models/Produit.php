@@ -43,4 +43,12 @@ class Produit extends Model
     {
         return $query->where('actif', true);
     }
+
+    // App/Models/Produit.php
+    public function prixFinal(): float
+    {
+        // Ici tu peux appliquer une réduction ou promotion si elle existe
+        return $this->prix; // pour l'instant sans réduction
+    }
+
 }

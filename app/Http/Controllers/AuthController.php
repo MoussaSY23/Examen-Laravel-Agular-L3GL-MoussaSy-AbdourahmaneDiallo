@@ -36,21 +36,13 @@ class AuthController extends Controller
             }
 
             $user = auth()->user();
-            
-            // Vérifier si l'utilisateur est actif (ajoutez cette logique si nécessaire)
-            // if (!$user->is_active) {
-            //     return response()->json([
-            //         'status' => 'error',
-            //         'message' => 'Votre compte est désactivé',
-            //     ], 401);
-            // }
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Connexion réussie',
                 'token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => auth('api')->factory()->getTTL() * 60, // en secondes
+                'expires_in' => auth('api')->factory()->getTTL() * 60,
                 'user' => $user
             ]);
 
@@ -66,9 +58,67 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        JWTAuth::invalidate(JWTAuth::getToken()); // Invalider le token JWT
+        JWTAuth::invalidate(JWTAuth::getToken());
         return response()->json(['message' => 'Déconnexion réussie']);
     }
 
+    // =========================
+    // Gestion du profil
+    // =========================
+
+    public function profile(Request $request)
+    {
+        $user = $request->user();
+        return response()->json($this->userService->getProfile($user));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:users,email,'.$user->id,
+            'password' => 'sometimes|string|min:6|confirmed',
+            'telephone' => 'sometimes|string|max:20',
+            'adresse' => 'sometimes|string|max:255',
+            'ville' => 'sometimes|string|max:100',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $updatedUser = $this->userService->updateProfile($user, $request->all());
+
+        return response()->json($updatedUser);
+    }
+
+
+
+    public function me(Request $request)
+    {
+        try {
+            $user = auth()->user();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Utilisateur non authentifié'
+                ], 401);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'user' => $user
+            ], 200);
+
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la récupération du profil : ' . $e->getMessage());
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Impossible de récupérer le profil',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
+        }
+    }
 
 }

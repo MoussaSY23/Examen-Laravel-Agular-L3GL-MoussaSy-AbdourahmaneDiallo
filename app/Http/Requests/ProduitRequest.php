@@ -25,8 +25,8 @@ class ProduitRequest extends FormRequest
             'stock' => 'required|integer|min:0',
             'unite' => 'nullable|string|max:50',
             'image_principale' => 'nullable|string|max:255',
-            'images' => 'nullable|array',
-            'images.*' => 'string|max:255',
+            'images' =>  'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10000',
             'actif' => 'boolean',
         ];
     }

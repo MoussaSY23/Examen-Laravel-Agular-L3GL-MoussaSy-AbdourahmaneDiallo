@@ -31,4 +31,21 @@ class CategorieController extends Controller
         $this->service->supprimer($categorie);
         return response()->json(['message' => 'Catégorie supprimée']);
     }
+
+    public function produits(Categorie $categorie)
+    {
+        return response()->json($categorie->produits);
+    }
+
+    public function show($id)
+    {
+        $categorie = Categorie::find($id);
+
+        if (!$categorie) {
+            return response()->json(['message' => 'Catégorie non trouvée'], 404);
+        }
+
+        return response()->json($categorie);
+    }
+
 }

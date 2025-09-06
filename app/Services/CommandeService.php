@@ -6,18 +6,21 @@ namespace App\Services;
 use App\Models\Commande;
 use App\Models\Produit;
 use Illuminate\Support\Facades\DB;
+use App\Events\CommandeStatutChange;
 
 class CommandeService
 {
     public function lister()
     {
-        return Commande::with('produits')->paginate(20);
+        return Commande::with(['produits', 'client', 'employe'])->paginate(20);
     }
+
 
     public function trouverParId(int $id): ?Commande
     {
-        return Commande::with('produits')->find($id);
+        return Commande::with(['produits', 'client', 'employe'])->find($id);
     }
+
 
     public function creer(array $validatedData): Commande
     {
@@ -66,7 +69,10 @@ class CommandeService
 
     public function mettreAJourStatut(Commande $commande, string $statut): Commande
     {
-        $commande->update(['statut' => $statut]);
+        $commande->update([
+            'employe_id' => auth()->id(),  // employé connecté
+            'statut' => $statut
+        ]);
 
         // Déclenchement d'un événement pour le front en temps réel
         event(new CommandeStatutChange($commande));
@@ -77,12 +83,15 @@ class CommandeService
     public function genererFacture(Commande $commande): string
     {
         $factureService = new FactureService();
+        // Charger les relations nécessaires pour la vue de facture
+        $commande->load(['produits', 'client']);
         return $factureService->genererPDF($commande);
     }
 
     public function envoyerFacture(Commande $commande)
     {
         $factureService = new FactureService();
+        $commande->load(['produits', 'client']);
         $pdfPath = $factureService->genererPDF($commande);
         $factureService->envoyerEmail($commande, $pdfPath);
     }

@@ -16,6 +16,7 @@ class MessageRequest extends FormRequest
         return [
             'expediteur_id' => 'required|exists:users,id',
             'destinataire_id' => 'nullable|exists:users,id',
+            'commande_id' => 'nullable|exists:commandes,id',
             'contenu' => 'required|string|max:2000',
             'lu' => 'boolean',
         ];

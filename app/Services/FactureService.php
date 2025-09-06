@@ -23,7 +23,11 @@ class FactureService
 
         // Chemin de stockage
         $filename = $numero . '.pdf';
-        $path = storage_path('app/factures/' . $filename);
+        $dir = storage_path('app/public/factures');
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0755, true);
+        }
+        $path = $dir . DIRECTORY_SEPARATOR . $filename;
         $pdf->save($path);
 
         // Créer ou mettre à jour la facture en base
@@ -46,23 +50,31 @@ class FactureService
      */
     public function envoyerEmail(Commande $commande, string $pdfPath)
     {
-        $clientEmail = $commande->user->email ?? null;
+        // Récupérer l'email du client via la relation client()
+        $client = $commande->client; // lazy load OK
+        $clientEmail = $client?->email;
 
         if (!$clientEmail) {
             throw new \Exception('Client sans email');
         }
 
-        Mail::send([], [], function($message) use ($clientEmail, $pdfPath, $commande) {
-            $message->to($clientEmail)
-                ->subject('Votre facture de commande #' . $commande->id)
-                ->attach($pdfPath)
-                ->setBody('Bonjour, veuillez trouver ci-joint votre facture.');
-        });
+        try {
+            Mail::send([], [], function($message) use ($clientEmail, $pdfPath, $commande) {
+                $message->to($clientEmail)
+                    ->subject('Votre facture de commande #' . $commande->id)
+                    ->attach($pdfPath)
+                    ->setBody('Bonjour, veuillez trouver ci-joint votre facture.');
+            });
 
-        // Mettre à jour la facture pour indiquer qu’elle a été envoyée
-        $facture = Facture::where('commande_id', $commande->id)->first();
-        if ($facture) {
-            $facture->update(['envoye_email' => true]);
+            // Mettre à jour la facture pour indiquer qu’elle a été envoyée
+            $facture = Facture::where('commande_id', $commande->id)->first();
+            if ($facture) {
+                $facture->update(['envoye_email' => true]);
+            }
+        } catch (\Throwable $e) {
+            // Log mais ne pas bloquer
+            \Log::error('Erreur envoi email facture: '.$e->getMessage());
+            throw $e;
         }
     }
 }

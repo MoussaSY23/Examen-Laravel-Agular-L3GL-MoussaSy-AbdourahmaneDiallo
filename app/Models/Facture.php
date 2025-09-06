@@ -32,4 +32,10 @@ class Facture extends Model
     {
         return $this->belongsTo(Commande::class, 'commande_id');
     }
+
+    public function getUrlAttribute()
+    {
+        return asset('storage/factures/' . basename($this->pdf_path));
+    }
+
 }

@@ -78,4 +78,11 @@ class User extends Authenticatable implements JWTSubject
             'role' => $this->role ?? 'user', // Assurez-vous que le champ role existe dans votre table users
         ];
     }
+
+
+    public function commandesAssignees()
+    {
+        return $this->hasMany(Commande::class, 'employe_id');
+    }
+
 }
