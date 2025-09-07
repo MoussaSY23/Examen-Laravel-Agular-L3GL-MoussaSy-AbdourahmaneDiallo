@@ -1,1 +1,94 @@
-<p>detail-produit works!</p>
+<div class="product-detail-page" *ngIf="produit">
+  <section class="breadcrumb-section">
+    <div class="container">
+      <a routerLink="/produits">Produits</a>
+      <i class="fas fa-chevron-right"></i>
+      <span>{{ produit.nom }}</span>
+    </div>
+  </section>
+
+  <section class="product-detail-main container">
+    <div class="product-image-gallery">
+      <div class="main-image">
+        <img [src]="mainImage" [alt]="produit.nom" (error)="onImageError($event)" />
+      </div>
+
+      <div class="thumbnail-images">
+        <img
+          *ngFor="let img of produit.images"
+          [src]="'http://localhost:8000/storage/' + img"
+          alt="Thumbnail"
+          [class.active]="mainImage === 'http://localhost:8000/storage/' + img"
+          (click)="changeMainImage('http://localhost:8000/storage/' + img)"
+          (error)="onImageError($event)"
+        />
+      </div>
+    </div>
+
+    <div class="product-info-section">
+      <p class="product-category">Catégorie: {{ produit.categorie_id }}</p>
+      <h1 class="product-title">{{ produit.nom }}</h1>
+
+      <p class="product-price">
+        <span class="current-price">{{ formatPrice(produit.prix) }}</span>
+      </p>
+
+      <div class="stock-status" [class.in-stock]="produit.stock > 0" [class.out-of-stock]="produit.stock <= 0">
+        <i class="fas" [class.fa-check-circle]="produit.stock > 0" [class.fa-times-circle]="produit.stock <= 0"></i>
+        {{ produit.stock > 0 ? 'En stock' : 'Rupture de stock' }}
+      </div>
+
+      <p class="product-description">{{ produit.description }}</p>
+
+      <div class="product-options">
+        <label>Quantité:</label>
+        <div class="quantity-controls">
+          <button (click)="decrementQuantity()">-</button>
+          <input type="number" [(ngModel)]="quantity" min="1" [max]="produit.stock"/>
+          <button (click)="incrementQuantity()">+</button>
+        </div>
+      </div>
+
+      <div class="product-actions-detail">
+        <button (click)="addToCart()" [disabled]="isOutOfStock(produit.stock)">Ajouter au panier</button>
+        <button (click)="buyNow()" [disabled]="isOutOfStock(produit.stock)">Acheter maintenant</button>
+      </div>
+
+      <div class="product-meta">
+        <span>SKU: ALM-{{ produit.id }}</span>
+        <span>Type: {{ produit.en_promotion }}</span>
+        <span>Unité: {{ produit.unite }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="product-extra-details container">
+    <h2>Détails du Produit</h2>
+    <div class="tabs">
+      <button class="tab-button" [class.active]="activeTab==='description'" (click)="setActiveTab('description')">Description</button>
+      <button class="tab-button" [class.active]="activeTab==='specifications'" (click)="setActiveTab('specifications')">Spécifications</button>
+      <button class="tab-button" [class.active]="activeTab==='reviews'" (click)="setActiveTab('reviews')">Avis</button>
+    </div>
+
+    <div class="tab-content" [class.active]="activeTab==='description'">
+      <p>{{ produit.description }}</p>
+    </div>
+    <div class="tab-content" [class.active]="activeTab==='specifications'">
+      <p>Largeur, poids, origine… à remplir selon modèle Produit</p>
+    </div>
+    <div class="tab-content" [class.active]="activeTab==='reviews'">
+      <p>Avis clients à ajouter</p>
+    </div>
+  </section>
+
+  <section class="related-products-section container">
+    <h2>Produits Similaires</h2>
+    <div class="products-grid">
+      <div *ngIf="relatedProducts.length === 0">Aucun produit similaire pour l'instant.</div>
+    </div>
+  </section>
+</div>
+
+<div *ngIf="!produit" class="loading-state">
+  <p>Chargement du produit ou produit introuvable...</p>
+</div>

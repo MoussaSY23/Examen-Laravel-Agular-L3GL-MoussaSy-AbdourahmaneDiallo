@@ -1,0 +1,263 @@
+<div class="bg-slate-50 min-h-screen font-sans text-gray-800">
+      
+  <!-- Bannière -->
+  <header class="relative overflow-hidden pt-14 pb-24 rounded-b-3xl text-white
+                 bg-gradient-to-r from-violet-600 to-indigo-700 shadow-lg">
+    <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
+      <h1 class="text-3xl sm:text-4xl font-extrabold mb-2 leading-tight">
+        Gestion des produits
+      </h1>
+      <p class="text-lg opacity-90 mb-6">
+        Filtrez, recherchez et gérez votre catalogue en toute simplicité
+      </p>
+      <div class="flex flex-wrap justify-center gap-2">
+        <button
+          class="bg-white/20 text-white border border-white/30 px-5 py-2.5 font-semibold rounded-xl
+                 shadow-lg transition-all hover:bg-white/30 active:scale-95"
+          (click)="resetFiltres()"
+          aria-label="Réinitialiser les filtres">
+          <i class="fa-solid fa-undo mr-2"></i> Réinitialiser
+        </button>
+        <button
+          class="bg-white text-indigo-700 px-5 py-2.5 font-semibold rounded-xl
+                 shadow-lg transition-all hover:bg-gray-50 active:scale-95"
+          (click)="router.navigate(['/produit-form'])">
+          <i class="fa-solid fa-plus mr-2"></i> Ajouter un produit
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Barre d’outils -->
+  <section class="max-w-6xl mx-auto px-4 py-6 mt-6 flex flex-wrap items-center justify-between gap-4
+                  border-b border-dashed border-gray-300">
+    <div class="flex-1 flex flex-wrap gap-3 min-w-[280px]">
+      <div class="relative flex-1 min-w-[200px]">
+        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+        <input
+          type="text"
+          placeholder="Rechercher par nom…"
+          class="w-full bg-white border border-gray-300 pl-10 pr-4 py-2 rounded-xl focus:outline-none
+                 focus:border-violet-600 focus:ring-4 focus:ring-violet-600/15 text-sm"
+          [(ngModel)]="searchTerm"
+          (input)="appliquerFiltres()"
+          aria-label="Rechercher un produit" />
+      </div>
+
+      <div class="relative flex-1 min-w-[200px]">
+        <i class="fa-solid fa-filter absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+        <select
+          class="w-full bg-white border border-gray-300 pl-10 pr-4 py-2 rounded-xl focus:outline-none
+                 focus:border-violet-600 focus:ring-4 focus:ring-violet-600/15 text-sm appearance-none"
+          [(ngModel)]="selectedCategory"
+          (change)="appliquerFiltres()"
+          aria-label="Filtrer par catégorie">
+          <option [ngValue]="'all'">Toutes les catégories</option>
+          <option *ngFor="let cat of categories; trackBy: trackByCategorie" [ngValue]="cat.id">
+            {{ cat.nom }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="text-sm text-gray-500">
+      <span *ngIf="!loading">{{ produitsFiltres.length }} résultat(s)</span>
+    </div>
+  </section>
+
+  <!-- Liste des produits (cards) -->
+  <section class="max-w-6xl mx-auto px-4 py-8">
+    <div *ngIf="loading" class="text-center py-12 text-gray-500">Chargement…</div>
+    <div *ngIf="error" class="text-center py-12 text-red-600">{{ error }}</div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <article
+        class="relative bg-white rounded-2xl shadow-lg overflow-hidden
+               transition-all hover:-translate-y-1.5 hover:shadow-2xl"
+        *ngFor="let produit of pagedProduits; trackBy: trackByProduit">
+        <div class="relative h-48">
+          <img
+            class="w-full h-full object-cover"
+            [src]="getImageUrl(produit)"
+            [alt]="produit.nom" />
+          
+          <!-- Étiquette Promo -->
+          <span class="absolute top-3 -left-2 bg-red-600 text-white font-bold text-xs py-1.5 px-3 rounded-lg shadow-lg -rotate-3"
+                *ngIf="produit.en_promotion">
+            Promo
+          </span>
+          
+          <!-- Badge de statut -->
+          <span
+            class="absolute bottom-3 right-3 px-3 py-1 text-xs font-semibold rounded-full"
+            [ngClass]="{
+              'bg-green-100 text-green-800': getStatut(produit) === 'En stock',
+              'bg-orange-100 text-orange-800': getStatut(produit) === 'Stock faible',
+              'bg-red-100 text-red-800': getStatut(produit) === 'Rupture'
+            }">
+            {{ getStatut(produit) }}
+          </span>
+        </div>
+
+        <div class="p-4">
+          <h3 class="text-lg font-bold mb-1">{{ produit.nom }}</h3>
+          <div class="text-sm text-gray-500 mb-2" *ngIf="produit.categorie">
+            <i class="fa-solid fa-tags mr-1"></i> {{ produit.categorie.nom }}
+          </div>
+          
+          <div class="flex items-baseline gap-2 mb-2">
+            <span class="text-lg font-bold text-red-600" *ngIf="produit.en_promotion">
+              {{ produit.prix_promotion | currency:'XOF' }}
+            </span>
+            <span [ngClass]="{'text-sm text-gray-400 line-through': produit.en_promotion, 'text-lg font-bold text-gray-900': !produit.en_promotion}">
+              {{ produit.prix | currency:'XOF' }}
+            </span>
+          </div>
+          
+          <div class="text-sm text-gray-600 flex items-center">
+            <i class="fa-solid fa-box-open text-indigo-600 mr-2"></i>
+            {{ produit.stock }} {{ produit.unite || '' }}
+          </div>
+        </div>
+        
+        <!-- Boutons d'action -->
+        <div class="flex justify-between items-center gap-2 p-3 border-t border-gray-200">
+          <div class="flex gap-2">
+            <button class="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg font-medium
+                           transition-all hover:bg-indigo-700 active:scale-95"
+                    routerLink="/details-produit/{{ produit.id }}" aria-label="Voir détails">
+              <i class="fa-solid fa-eye mr-2"></i> Détails
+            </button>
+            <button class="bg-gray-100 text-gray-800 text-sm px-4 py-2 rounded-lg font-medium
+                           transition-all hover:bg-gray-200 active:scale-95"
+                    (click)="modifierProduit(produit)" aria-label="Modifier">
+              <i class="fa-solid fa-edit mr-2"></i> Modifier
+            </button>
+          </div>
+          <button class="bg-gray-100 text-gray-600 w-9 h-9 flex items-center justify-center rounded-lg
+                         transition-all hover:text-red-600 hover:bg-red-50"
+                  title="Supprimer" (click)="supprimerProduit(produit)" aria-label="Supprimer">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Pagination -->
+  <div class="flex items-center justify-center gap-4 py-6" *ngIf="totalPages > 1">
+    <button
+      class="bg-indigo-600 text-white px-5 py-2 rounded-xl transition-all hover:bg-indigo-700 active:scale-95
+             disabled:opacity-60 disabled:cursor-not-allowed"
+      (click)="changerPage(-1)"
+      [disabled]="page === 1">
+      <i class="fa-solid fa-chevron-left mr-2"></i> Précédent
+    </button>
+    <span class="text-gray-600 font-semibold">Page {{ page }} / {{ totalPages }}</span>
+    <button
+      class="bg-indigo-600 text-white px-5 py-2 rounded-xl transition-all hover:bg-indigo-700 active:scale-95
+             disabled:opacity-60 disabled:cursor-not-allowed"
+      (click)="changerPage(1)"
+      [disabled]="page === totalPages">
+      Suivant <i class="fa-solid fa-chevron-right ml-2"></i>
+    </button>
+  </div>
+
+  <!-- Section des stats -->
+  <section class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
+      <div class="w-12 h-12 flex items-center justify-center rounded-xl text-white
+                  bg-gradient-to-br from-violet-600 to-indigo-700">
+        <i class="fa-solid fa-layer-group text-lg"></i>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">Produits totaux</div>
+        <div class="text-2xl font-black">{{ totalProduits }}</div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
+      <div class="w-12 h-12 flex items-center justify-center rounded-xl text-white
+                  bg-gradient-to-br from-green-500 to-emerald-600">
+        <i class="fa-solid fa-percentage text-lg"></i>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">En promotion</div>
+        <div class="text-2xl font-black">{{ produitsPromo }}</div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
+      <div class="w-12 h-12 flex items-center justify-center rounded-xl text-white
+                  bg-gradient-to-br from-orange-500 to-amber-600">
+        <i class="fa-solid fa-exclamation-triangle text-lg"></i>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">Stock faible</div>
+        <div class="text-2xl font-black">{{ produitsStockFaible }}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tableau par catégories -->
+  <section class="max-w-6xl mx-auto px-4 py-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold flex items-center gap-2">
+        <i class="fa-solid fa-table"></i> Produits par catégorie
+      </h2>
+      <button
+        class="bg-gray-200 text-gray-800 px-4 py-2 rounded-xl transition-all hover:bg-gray-300 active:scale-95"
+        (click)="selectedCategory = 'all'; appliquerFiltres()">
+        Tout afficher
+      </button>
+    </div>
+    
+    <div class="bg-white rounded-2xl shadow-lg overflow-x-auto border border-gray-200">
+      <table class="w-full text-left table-auto">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 w-1/5">Catégorie</th>
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 w-3/5">Produits</th>
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 w-1/12 text-center">Total</th>
+            <th class="px-4 py-3 text-sm font-semibold text-gray-700 w-1/12 text-center">Filtrer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-t border-gray-200" *ngFor="let cat of categories; trackBy: trackByCategorie">
+            <td class="px-4 py-4 text-sm font-medium text-indigo-700">
+              <i class="fa-solid fa-tag mr-2"></i> {{ cat.nom }}
+            </td>
+            <td class="px-4 py-4">
+              <div class="flex flex-wrap gap-2">
+                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-1 rounded-full"
+                      *ngFor="let prod of getProduitsByCategorie(cat.id); trackBy: trackByProduit">
+                  {{ prod.nom }}
+                </span>
+              </div>
+            </td>
+            <td class="px-4 py-4 text-center text-sm font-bold text-gray-600">
+              {{ getProduitsByCategorie(cat.id).length }}
+            </td>
+            <td class="px-4 py-4 text-center">
+              <button
+                class="text-indigo-600 font-medium hover:text-indigo-800 transition-colors"
+                (click)="selectedCategory = cat.id; appliquerFiltres()">
+                <i class="fa-solid fa-filter"></i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="categories.length === 0">
+            <td colspan="4" class="py-6 text-center text-gray-500">
+              Aucune catégorie disponible.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 text-center text-gray-500 text-sm">
+    Application de gestion de produits © {{ currentYear }}
+  </footer>
+</div>

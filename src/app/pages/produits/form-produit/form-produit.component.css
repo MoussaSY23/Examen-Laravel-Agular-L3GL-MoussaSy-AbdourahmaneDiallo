@@ -1,0 +1,122 @@
+.form-container {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.form-row {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row.small {
+  display: flex;
+  gap: 20px;
+}
+
+.form-row label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: 0.3s;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.preview img,
+.thumb img {
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 6px;
+  margin-right: 10px;
+}
+
+.thumb {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.thumb button {
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.thumb button:hover {
+  background: #e53935;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.actions button {
+  padding: 10px 25px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.actions button[type="submit"] {
+  background: #4CAF50;
+  color: white;
+}
+
+.actions button[type="submit"]:hover {
+  background: #45a049;
+}
+
+.actions button[type="button"] {
+  background: #ccc;
+}
+
+.actions button[type="button"]:hover {
+  background: #aaa;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  padding: 50px;
+  color: #555;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

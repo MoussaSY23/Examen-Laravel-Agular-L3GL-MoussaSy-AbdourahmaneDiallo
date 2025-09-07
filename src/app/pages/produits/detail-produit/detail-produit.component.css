@@ -1,0 +1,101 @@
+.product-detail-page {
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+.breadcrumb-section {
+  background-color: #f5f5f5;
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+.breadcrumb-section a { color: #007bff; text-decoration: none; }
+.breadcrumb-section i { margin: 0 5px; }
+
+.product-detail-main {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.product-image-gallery {
+  flex: 1;
+}
+.product-image-gallery .main-image img {
+  width: 100%;
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+.product-image-gallery .main-image img:hover { transform: scale(1.05); }
+.thumbnail-images {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.thumbnail-images img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.thumbnail-images img.active {
+  border: 2px solid #007bff;
+  transform: scale(1.1);
+}
+
+.product-info-section {
+  flex: 1;
+}
+.product-info-section .product-title { font-size: 2rem; margin-bottom: 10px; }
+.product-price { font-size: 1.5rem; color: #e74c3c; margin-bottom: 10px; }
+.stock-status { margin-bottom: 15px; }
+.stock-status.in-stock i { color: green; }
+.stock-status.out-of-stock i { color: red; }
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+.quantity-controls input {
+  width: 60px;
+  text-align: center;
+  padding: 5px;
+}
+
+.product-actions-detail button {
+  margin-right: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.product-actions-detail button:disabled { background-color: #ccc; cursor: not-allowed; }
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.tab-button {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+.tab-button.active { background-color: #007bff; color: white; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.related-products-section .products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.loading-state { text-align: center; margin-top: 50px; font-size: 1.2rem; }

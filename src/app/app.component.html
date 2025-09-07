@@ -1,1 +1,4 @@
-<router-outlet></router-outlet >
+<!-- Navbar seulement si l'utilisateur est connecté -->
+<app-navbar *ngIf="authService.isLoggedIn()"></app-navbar>
+
+<router-outlet></router-outlet>

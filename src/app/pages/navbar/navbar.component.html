@@ -1,0 +1,56 @@
+<nav class="navbar">
+  <div class="nav-container">
+
+    <!-- Logo + Nom -->
+    <div class="nav-brand">
+      <img src="../../../assets/images.jpeg" alt="Logo Boulangerie" class="brand-logo">
+      <span class="brand-text">Boulanger Patissier</span>
+    </div>
+
+    <!-- Menu central selon rôle -->
+    <ul class="nav-menu" *ngIf="user; else loadingMenu">
+      <!-- Admin -->
+      <li *ngIf="isAdmin()"><a routerLink="/dashboard">Dashboard</a></li>
+      <li *ngIf="isAdmin()"><a routerLink="/produits">Produits</a></li>
+      <li *ngIf="isAdmin()"><a routerLink="/utilisateurs">Utilisateurs</a></li>
+      <li *ngIf="isAdmin()"><a routerLink="/categories">Catégories</a></li>
+      <li *ngIf="isAdmin()"><a routerLink="/commandes">Commandes</a></li>
+
+      <!-- Employé -->
+      <li *ngIf="isEmploye()"><a routerLink="/dashboard">Dashboard</a></li>
+      <li *ngIf="isEmploye()"><a routerLink="/produits">Produits</a></li>
+      <li *ngIf="isEmploye()"><a routerLink="/utilisateurs">Utilisateurs</a></li>
+      <li *ngIf="isEmploye()"><a routerLink="/categories">Catégories</a></li>
+      <li *ngIf="isEmploye()"><a routerLink="/commandes">Commandes</a></li>
+      <li *ngIf="isEmploye()"><a routerLink="/conversations">Conversations</a></li>
+
+      <!-- Client -->
+      <li *ngIf="isClient()"><a routerLink="/admin-dashboard">Accueil</a></li>
+      <li *ngIf="isClient()"><a routerLink="/produits">Produits</a></li>
+      <li *ngIf="isClient()"><a routerLink="/categories">Catégories</a></li>
+      <li *ngIf="isClient()"><a routerLink="/panier">Panier</a></li>
+      <li *ngIf="isClient()"><a routerLink="/conversations">Conversations</a></li>
+    </ul>
+
+    <ng-template #loadingMenu>
+      <ul class="nav-menu">
+        <li><span style="color:white;">Chargement...</span></li>
+      </ul>
+    </ng-template>
+
+    <!-- Menu utilisateur -->
+    <div class="nav-user" *ngIf="user">
+      <div class="user-info">
+        <img [src]="getAvatarUrl()" alt="Photo utilisateur" class="user-avatar">
+        <span class="user-name">{{ user.name }}</span>
+      </div>
+
+      <!-- Dropdown -->
+      <div class="dropdown">
+        <a routerLink="/mon-profil">Profil</a>
+        <a (click)="logout()">Déconnexion</a>
+      </div>
+    </div>
+
+  </div>
+</nav>

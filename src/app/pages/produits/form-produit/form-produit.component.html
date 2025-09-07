@@ -1,0 +1,97 @@
+<div class="form-container" *ngIf="!loading; else loadingTpl">
+  <h2>{{ isEditMode ? 'Modifier un produit' : 'Ajouter un produit' }}</h2>
+
+  <form [formGroup]="produitForm" (ngSubmit)="onSubmit()">
+    <div class="form-row">
+      <label>Nom *</label>
+      <input formControlName="nom" placeholder="Nom du produit"/>
+    </div>
+
+    <div class="form-row">
+      <label>Description</label>
+      <textarea formControlName="description" placeholder="Description du produit"></textarea>
+    </div>
+
+    <div class="form-row small">
+      <div>
+        <label>Prix *</label>
+        <input type="number" formControlName="prix"/>
+      </div>
+      <div>
+        <label>Stock *</label>
+        <input type="number" formControlName="stock"/>
+      </div>
+    </div>
+
+    <div class="form-row small">
+      <div>
+        <label>Catégorie *</label>
+        <select formControlName="categorie_id">
+          <option value="">-- Sélectionner --</option>
+          <option *ngFor="let c of categories" [value]="c.id">{{ c.nom }}</option>
+        </select>
+      </div>
+      <div>
+        <label>Unité *</label>
+        <input formControlName="unite" placeholder="Ex: kg, pièce"/>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label><input type="checkbox" formControlName="actif"/> Actif</label>
+    </div>
+
+    <hr/>
+
+    <div class="form-row">
+      <label>Image principale</label>
+      <input type="file" (change)="onMainFileChange($event)"/>
+      <div class="preview" *ngIf="imagePrincipaleExisting && !selectedMainFile">
+        <p>Image actuelle :</p>
+        <img [src]="'http://localhost:8000/storage/' + imagePrincipaleExisting" alt="principale"/>
+      </div>
+      <div class="preview" *ngIf="selectedMainFile">
+        <p>Nouvelle image sélectionnée : {{ selectedMainFile.name }}</p>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Images supplémentaires</label>
+      <input type="file" (change)="onFilesChange($event)" multiple/>
+      <div class="existing-images" *ngIf="imagesExisting.length">
+        <p>Images existantes :</p>
+        <div class="thumb" *ngFor="let img of imagesExisting; let i=index">
+          <img [src]="'http://localhost:8000/storage/' + img" alt="img"/>
+          <button type="button" (click)="removeExistingImage(i)">Supprimer</button>
+        </div>
+      </div>
+      <div *ngIf="selectedFiles.length">
+        <p>Fichiers sélectionnés :</p>
+        <ul>
+          <li *ngFor="let f of selectedFiles">{{ f.name }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label><input type="checkbox" formControlName="en_promotion"/> En promotion</label>
+    </div>
+    <div class="form-row promo-fields" *ngIf="produitForm.get('en_promotion')?.value">
+      <label>Prix promo</label>
+      <input formControlName="prix_promotion" type="number"/>
+      <label>Date début</label>
+      <input formControlName="date_debut_promotion" type="date"/>
+      <label>Date fin</label>
+      <input formControlName="date_fin_promotion" type="date"/>
+    </div>
+
+    <div class="form-row actions">
+      <button type="submit" [disabled]="produitForm.invalid">{{ isEditMode ? 'Mettre à jour' : 'Ajouter' }}</button>
+      <button type="button" (click)="resetForm()">Annuler</button>
+    </div>
+  </form>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="loading">Chargement...</div>
+</ng-template>

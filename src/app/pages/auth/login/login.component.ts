@@ -83,7 +83,7 @@ export class LoginComponent implements OnInit {
         
         // Redirection vers le dashboard ou la page demandée
     
-        this.router.navigate(['/home']);
+        this.router.navigate(['/admin-dashboard']);
       }
     });
   }

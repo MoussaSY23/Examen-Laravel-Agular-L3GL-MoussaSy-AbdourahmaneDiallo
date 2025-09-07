@@ -1,0 +1,481 @@
+/* =========================
+   About Page - Boulangerie
+   ========================= */
+
+/* Général */
+.about-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #5c3d2e;
+  background-color: #f9f6f1;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* =========================
+   NAVBAR
+   ========================= */
+.navbar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 1rem 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: -30%;
+}
+
+.brand-icon {
+  
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: url('../../../assets/images.jpeg') center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+}
+
+.brand-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: #4a5568;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #6366f1;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-btn {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.login-btn {
+  background: transparent;
+  color: #4a5568;
+  border: 1px solid #d1d5db;
+}
+
+.login-btn:hover {
+  background: #f7fafc;
+}
+
+.signup-btn {
+  background: linear-gradient(135deg, #ff7b54, #ff6b47);
+  color: white;
+}
+
+.signup-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 123, 84, 0.4);
+}
+
+/* =========================
+   HERO
+   ========================= */
+.about-hero {
+  height: 55vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.65)),
+              url('https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+  background-size: cover;
+  background-position: center 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 65px; /* évite chevauchement avec navbar */
+}
+
+.hero-content {
+  color: white;
+  animation: fadeInUp 1s ease-out;
+}
+
+.hero-content h1 {
+  font-size: 3.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  font-family: 'Playfair Display', serif;
+}
+
+.hero-content p {
+  font-size: 1.25rem;
+  max-width: 650px;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* =========================
+   CONTAINERS & TITRES
+   ========================= */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section-title {
+  font-size: 2.3rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #5c3d2e;
+  font-family: 'Playfair Display', serif;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 3rem;
+  font-size: 1.1rem;
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* =========================
+   HISTOIRE
+   ========================= */
+.history-section {
+  padding: 5rem 0;
+  background: white;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.history-text {
+  color: #6b7280;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+}
+
+.signature {
+  margin-top: 2rem;
+  text-align: right;
+}
+
+.signature img {
+  height: 55px;
+  margin-bottom: 0.5rem;
+}
+
+.signature p {
+  font-style: italic;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 380px;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  text-align: center;
+}
+
+/* =========================
+   VALEURS
+   ========================= */
+.values-section {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, #fdfcfb, #f5f7fa);
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.value-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+  transition: all 0.3s ease;
+}
+
+.value-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+}
+
+.value-icon {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.3rem;
+  background: linear-gradient(135deg, #ffd8cb, #ffb4a2);
+  transition: all 0.3s ease;
+}
+
+.value-card:hover .value-icon {
+  background: linear-gradient(135deg, #ff7b54, #ff6b47);
+}
+
+.value-icon svg {
+  width: 38px;
+  height: 38px;
+  stroke: #5c3d2e;
+}
+
+.value-card:hover .value-icon svg {
+  stroke: white;
+}
+
+/* =========================
+   EQUIPE
+   ========================= */
+.team-section {
+  padding: 5rem 0;
+  background: white;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.team-member {
+  background: white;
+  padding: 2rem;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+  transition: all 0.3s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+}
+
+.member-image .image-placeholder {
+  height: 190px;
+  width: 190px;
+  border-radius: 50%;
+  margin: 0 auto 1.3rem;
+}
+
+.member-info h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #5c3d2e;
+}
+
+.member-role {
+  color: #ff6b47;
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.member-desc {
+  color: #6b7280;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* =========================
+   ENGAGEMENT
+   ========================= */
+.commitment-section {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, #fffaf0, #fef7e0);
+}
+
+.commitment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.commitment-item {
+  text-align: center;
+  padding: 2rem;
+}
+
+.commitment-icon {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.3rem;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+.commitment-icon svg {
+  width: 38px;
+  height: 38px;
+  stroke: white;
+}
+
+.commitment-item h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  color: #5c3d2e;
+}
+
+.commitment-item p {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* =========================
+   CTA
+   ========================= */
+.cta-section {
+  padding: 5rem 0;
+  background: #4a5568;
+  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-content h2 {
+  font-size: 2.3rem;
+  margin-bottom: 1rem;
+  font-family: 'Playfair Display', serif;
+  color: white;
+}
+
+.cta-content p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  color: #e2e8f0;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.9rem 1.8rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ff7b54, #ff6b47);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(255, 107, 71, 0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.btn-outline:hover {
+  background: white;
+  color: #4a5568;
+}
+
+/* =========================
+   ANIMATIONS
+   ========================= */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+@media (max-width: 768px) {
+  .about-hero { height: 45vh; }
+  .hero-content h1 { font-size: 2.5rem; }
+  .history-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .cta-buttons { flex-direction: column; }
+  .btn { width: 100%; max-width: 280px; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 1rem; }
+  .hero-content h1 { font-size: 2rem; }
+  .section-title { font-size: 1.8rem; }
+  .image-placeholder { height: 280px; }
+}
