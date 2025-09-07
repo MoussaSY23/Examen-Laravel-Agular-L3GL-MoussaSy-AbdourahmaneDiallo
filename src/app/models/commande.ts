@@ -1,27 +1,41 @@
-// src/app/models/commande.model.ts
-import { User } from './user';
-import { Produit } from './produit';
-
-export interface LigneCommande {
-  id?: number;
-  produit_id: number;
-  produit?: Produit;
-  quantite: number;
-  prix_unitaire: number;
-  total: number;
-}
+import { User } from "./user";
+import { Produit } from "../services/produit/test/produits.service";
 
 export interface Commande {
   id: number;
-  user_id: number;
-  user?: User;
-  statut: 'en_attente' | 'en_cours' | 'terminee' | 'annulee';
-  montant_total: number;
+  user_id: number;               // le client qui a passé la commande
+  employe_id?: number | null;    // optionnel si assignation à un employé
+  statut: 'en_preparation' | 'en_livraison' | 'livree' | 'annulee';
+  mode_paiement: 'en_ligne' | 'a_la_livraison';
+  total: number;
+  date_commande: string;          // ISO date
+  date_livraison_estimee?: string | null;
   adresse_livraison: string;
-  telephone: string;
-  notes?: string;
-  lignes_commande: LigneCommande[];
-  created_at: string;
-  updated_at: string;
-  date_livraison?: string;
+  notes?: string | null;
+  actif: boolean;
+
+  // Relations
+  client?: User;
+  employe?: User;
+  produits?: ProduitCommande[];   // pivot avec quantités/prix
+  facture?: Facture;
+}
+
+export interface ProduitCommande {
+  produit_id: number;
+  nom?: string;
+  quantite: number;
+  prix_unitaire: number;
+  prix_total: number;
+  prod?: Produit;   // ⚠️ optional, car backend peut l’envoyer ou pas
+}
+
+export interface Facture {
+  id: number;
+  commande_id: number;
+  numero: string;         
+  total: number;
+  date_emission: string;  
+  pdf_path: string;
+  envoye_email: boolean;
 }

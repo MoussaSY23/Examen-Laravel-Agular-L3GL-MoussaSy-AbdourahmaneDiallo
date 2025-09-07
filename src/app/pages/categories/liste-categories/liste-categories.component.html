@@ -1,1 +1,84 @@
-<p>liste-categories works!</p>
+<!-- src/app/liste-categories/liste-categories.component.html -->
+<div class="categories-page">
+
+  <!-- ---------------- Banniere ---------------- -->
+  <div class="categories-banner">
+    <h1>Bienvenue dans notre Boulangerie</h1>
+    <p>
+      Découvrez nos délicieuses catégories de produits frais et artisanaux, 
+      avec des offres exclusives et nos nouveautés quotidiennes.
+    </p>
+    <button class="btn-cta" routerLink="/categorie-form">+ Ajouter une catégorie</button>
+  </div>
+
+  <!-- ---------------- Explorer par catégories ---------------- -->
+  <section class="categories-section">
+    <div class="container">
+      <h2>Explorer par catégories</h2>
+      <div class="categories-grid">
+        <div *ngFor="let categorie of categories" class="category-card">
+          <div class="category-content" (click)="goToCategorieDetails(categorie.id)">
+            <h3>{{categorie.nom}}</h3>
+            <p>{{categorie.description}}</p>
+            <span>{{categorie.produits?.length || 0}} produits</span>
+          </div>
+          <div class="category-actions">
+            <button class="btn-details" (click)="goToCategorieDetails(categorie.id)">Voir plus</button>
+            <button class="btn-edit" [routerLink]="['/categorie-form', categorie.id]">Modifier</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- Section intermédiaire ---------------- -->
+  <section class="mid-section">
+    <div class="mid-background">
+      <div class="mid-content">
+        <h2>Nos Engagements</h2>
+        <p>
+          Nous sélectionnons les meilleurs ingrédients pour vous offrir des produits frais et savoureux, 
+          préparés chaque jour par nos artisans boulangers.
+        </p>
+        <button class="btn-cta" (click)="goToContact()">Contactez-nous</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- Produits récents / Slider ---------------- -->
+  <section class="recent-products-section">
+    <div class="container">
+      <h2>Produits récents</h2>
+      <div class="products-slider">
+        <div *ngFor="let produit of produitsRecents" class="product-card" (click)="goToProduitDetails(produit.id)">
+          <img [src]="'http://localhost:8000/storage/' + produit.image_principale" alt="{{produit.nom}}">
+          <div class="product-info">
+            <h4>{{produit.nom}}</h4>
+            <p>{{produit.prix}} FCFA</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- Infos supplémentaires ---------------- -->
+  <section class="categories-info">
+    <div class="container">
+      <h2>Pourquoi choisir notre boulangerie ?</h2>
+      <p>Chaque catégorie de produits est préparée avec soin, en respectant la qualité et la fraîcheur :</p>
+      <ul>
+        <li>Produits artisanaux faits maison</li>
+        <li>Ingrédients de qualité supérieure</li>
+        <li>Variété de choix pour tous les goûts</li>
+        <li>Offres et promotions régulières</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ---------------- Quick actions / CTA ---------------- -->
+  <section class="quick-actions">
+    <button class="btn-primary" (click)="goToProduits()">Voir tous les produits</button>
+    <button class="btn-secondary" (click)="goToPromotions()">Découvrir les promotions</button>
+  </section>
+
+</div>

@@ -51,7 +51,7 @@ export class ProduitsService {
       );
   }
 
-  getProduit(id: number): Observable<Produit> {
+  getProduit(id?: number): Observable<Produit> {
     return this.http.get<{ success: boolean, data: Produit }>(`${this.apiUrl}/${id}`, this.getAuthOptions())
       .pipe(
         map((res: { success: boolean, data: Produit }) => res.data),

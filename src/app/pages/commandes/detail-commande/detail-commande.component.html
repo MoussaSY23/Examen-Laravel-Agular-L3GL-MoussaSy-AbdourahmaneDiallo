@@ -1,1 +1,110 @@
-<p>detail-commande works!</p>
+<div class="detail-commande-container">
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Chargement des détails...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="!isLoading && errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <!-- Détails -->
+  <div *ngIf="!isLoading && commande">
+
+    <!-- Header -->
+    <header class="detail-header">
+      <h2>Détails de la commande #{{ commande.id }}</h2>
+      <div class="header-right">
+        <span class="statut-badge" [ngClass]="commande.statut">{{ getStatutLabel(commande.statut) }}</span>
+        <button *ngIf="commande.statut !== 'livree'" class="btn-change-status" (click)="changerStatutCommande(commande)">
+          Changer statut
+        </button>
+      </div>
+    </header>
+
+    <!-- Infos Client & Employé -->
+    <section class="info-section">
+      <div class="info-card client-info-card">
+        <h3>Client</h3>
+        <p><strong>Nom :</strong> {{ commande.client?.name || 'Inconnu' }}</p>
+        <p><strong>Email :</strong> {{ commande.client?.email || '-' }}</p>
+        <p *ngIf="commande.client?.telephone"><strong>Téléphone :</strong> {{ commande.client?.telephone }}</p>
+        <p><strong>Adresse :</strong> {{ commande.adresse_livraison }}</p>
+        <p *ngIf="commande.notes"><strong>Notes :</strong> {{ commande.notes }}</p>
+      </div>
+
+      <div class="info-card employe-info-card" *ngIf="commande.employe">
+        <h3>Employé en charge</h3>
+        <p><strong>Nom :</strong> {{ commande.employe?.name }}</p>
+        <p><strong>Email :</strong> {{ commande.employe?.email }}</p>
+      </div>
+    </section>
+
+    <!-- Produits commandés -->
+    <section class="produits-section" *ngIf="commande.produits?.length">
+      <h3>Produits commandés</h3>
+      <div class="produits-cards">
+        <div class="produit-card" *ngFor="let p of commande.produits">
+          
+          <div class="produit-image">
+            <img 
+              [src]="getProduitImageUrl(p.prod)" 
+              [alt]="p.nom || p.prod?.nom || 'Produit'" 
+              (error)="onImageError($event)" />
+          </div>
+
+          <div class="produit-info">
+            <h4>{{ p.nom || p.prod?.nom || 'Produit sans nom' }}</h4>
+            <p>{{ p.prod?.description || '-' }}</p>
+            <div class="quantite-prix">
+              <span>Quantité: {{ p.quantite }}</span>
+              <span>Prix unitaire: {{ formatPrice(p.prix_unitaire) }}</span>
+              <span>Total: {{ formatPrice(p.prix_total) }}</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="total-section">
+        <h3>Total commande : {{ formatPrice(commande.total) }}</h3>
+      </div>
+    </section>
+
+    <!-- Mode de paiement -->
+    <section class="paiement-section">
+      <h3>Mode de paiement</h3>
+      <span class="payment-badge" [ngClass]="commande.mode_paiement">
+        <i class="fas" [ngClass]="commande.mode_paiement === 'en_ligne' ? 'fa-credit-card' : 'fa-money-bill-wave'"></i>
+        {{ commande.mode_paiement === 'en_ligne' ? 'En ligne' : 'À la livraison' }}
+      </span>
+    </section>
+
+    <!-- Instructions employé -->
+    <section class="instructions-section">
+      <h3>Guide d'utilisation</h3>
+      <div class="instruction-grid">
+        <div class="instruction-item">
+          <div class="instruction-icon preparation-icon"><i class="fas fa-clipboard-check"></i></div>
+          <div class="instruction-text"><h4>Préparation</h4><p>Vérifier les produits et préparer correctement la commande.</p></div>
+        </div>
+        <div class="instruction-item">
+          <div class="instruction-icon livraison-icon"><i class="fas fa-route"></i></div>
+          <div class="instruction-text"><h4>Suivi des statuts</h4><p>Mettre à jour le statut selon l'avancement.</p></div>
+        </div>
+        <div class="instruction-item">
+          <div class="instruction-icon address-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div class="instruction-text"><h4>Livraison</h4><p>Consulter l'adresse et les notes éventuelles du client.</p></div>
+        </div>
+        <div class="instruction-item">
+          <div class="instruction-icon invoice-icon"><i class="fas fa-file-invoice"></i></div>
+          <div class="instruction-text"><h4>Facturation</h4><p>Envoyer la facture PDF ou par email si nécessaire.</p></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

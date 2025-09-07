@@ -10,7 +10,7 @@
     <!-- Menu central selon rôle -->
     <ul class="nav-menu" *ngIf="user; else loadingMenu">
       <!-- Admin -->
-      <li *ngIf="isAdmin()"><a routerLink="/dashboard">Dashboard</a></li>
+      <li *ngIf="isAdmin()"><a routerLink="/admin-dashboard">Dashboard</a></li>
       <li *ngIf="isAdmin()"><a routerLink="/produits">Produits</a></li>
       <li *ngIf="isAdmin()"><a routerLink="/utilisateurs">Utilisateurs</a></li>
       <li *ngIf="isAdmin()"><a routerLink="/categories">Catégories</a></li>

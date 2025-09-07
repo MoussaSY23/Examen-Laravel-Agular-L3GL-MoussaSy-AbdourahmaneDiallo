@@ -56,7 +56,7 @@ export class AdminDashboardComponent implements OnInit {
       next: (commandes) => {
         // Trier les commandes récentes
         this.commandesRecentes = commandes
-          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          .sort((a, b) => new Date(b.date_commande).getTime() - new Date(a.date_commande).getTime())
           .slice(0, 5);
 
         // Statistiques
@@ -64,16 +64,16 @@ export class AdminDashboardComponent implements OnInit {
         const yesterday = new Date();
         yesterday.setDate(today.getDate() - 1);
 
-        const commandesAujourdHui = commandes.filter(c => new Date(c.created_at).toDateString() === today.toDateString()).length;
-        const commandesHier = commandes.filter(c => new Date(c.created_at).toDateString() === yesterday.toDateString()).length;
+        const commandesAujourdHui = commandes.filter(c => new Date(c.date_commande).toDateString() === today.toDateString()).length;
+        const commandesHier = commandes.filter(c => new Date(c.date_commande).toDateString() === yesterday.toDateString()).length;
 
         const chiffreAffairesAujourdHui = commandes
-          .filter(c => new Date(c.created_at).toDateString() === today.toDateString())
-          .reduce((sum, c) => sum + c.montant_total, 0);
+          .filter(c => new Date(c.date_commande).toDateString() === today.toDateString())
+          .reduce((sum, c) => sum + c.total, 0);
 
         const chiffreAffairesHier = commandes
-          .filter(c => new Date(c.created_at).toDateString() === yesterday.toDateString())
-          .reduce((sum, c) => sum + c.montant_total, 0);
+          .filter(c => new Date(c.date_commande).toDateString() === yesterday.toDateString())
+          .reduce((sum, c) => sum + c.total, 0);
 
         this.stats.commandesAujourdhui.total = commandesAujourdHui;
         this.stats.commandesAujourdhui.variation = this.calcVariation(commandesAujourdHui, commandesHier);
@@ -83,11 +83,11 @@ export class AdminDashboardComponent implements OnInit {
 
         // Clients actifs
         const clientsAujourdHui = new Set(commandes
-          .filter(c => new Date(c.created_at).toDateString() === today.toDateString())
+          .filter(c => new Date(c.date_commande).toDateString() === today.toDateString())
           .map(c => c.user_id)).size;
 
         const clientsHier = new Set(commandes
-          .filter(c => new Date(c.created_at).toDateString() === yesterday.toDateString())
+          .filter(c => new Date(c.date_commande).toDateString() === yesterday.toDateString())
           .map(c => c.user_id)).size;
 
         this.stats.clientsActifs.total = clientsAujourdHui;
@@ -96,11 +96,11 @@ export class AdminDashboardComponent implements OnInit {
         // Notifications simples
         this.notifications = [];
         commandes.forEach(c => {
-          if (c.statut === 'en_cours') {
+          if (c.statut === 'en_livraison') {
             this.notifications.push({
               type: 'commande',
               icon: '🛒',
-              message: `Nouvelle commande #${c.id} (Client: ${c.user?.name || 'Inconnu'})`
+              message: `Nouvelle commande #${c.id} (Client: ${c.employe?.name || 'Inconnu'})`
             });
           }
         });
@@ -153,9 +153,9 @@ export class AdminDashboardComponent implements OnInit {
 
   getStatutClass(statut: Commande['statut']): string {
     switch (statut) {
-      case 'terminee': return 'statut-terminee';
-      case 'en_cours': return 'statut-cours';
-      case 'en_attente': return 'statut-attente';
+      case 'livree': return 'statut-terminee';
+      case 'en_livraison': return 'statut-cours';
+      case 'en_preparation': return 'statut-attente';
       case 'annulee': return 'statut-annulee';
       default: return 'statut-default';
     }
@@ -176,5 +176,11 @@ export class AdminDashboardComponent implements OnInit {
 
   formatDate(date: Date): string {
     return date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+    getImageUrl(produit: Produit): string {
+    return produit.image_principale
+      ? `http://localhost:8000/storage/${produit.image_principale}`
+      : '../../../../assets/default-avatar.png';
   }
 }
