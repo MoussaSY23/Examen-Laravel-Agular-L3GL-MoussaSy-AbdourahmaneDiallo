@@ -1,0 +1,7 @@
+table th, table td {
+  vertical-align: middle;
+}
+
+button {
+  min-width: 50px;
+}

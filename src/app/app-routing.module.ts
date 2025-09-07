@@ -11,6 +11,13 @@ import { MonProfilComponent } from './pages/profil/mon-profil/mon-profil.compone
 import { ProduitFormComponent } from './pages/produits/produit-form/produit-form.component';
 import { FormProduitComponent } from './pages/produits/form-produit/form-produit.component';
 import { DetailProduitComponent } from './pages/produits/detail-produit/detail-produit.component';
+import { ListeCategoriesComponent } from './pages/categories/liste-categories/liste-categories.component';
+import { DetailsCategorieComponent } from './pages/categories/details-categorie/details-categorie.component';
+import { CategoriesFormComponent } from './pages/categories/categories-form/categories-form.component';
+import { CommandesFormComponent } from './pages/commandes/commandes-form/commandes-form.component';
+import { ListeCommandesComponent } from './pages/commandes/liste-commandes/liste-commandes.component';
+import { DetailCommandeComponent } from './pages/commandes/detail-commande/detail-commande.component';
+
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -27,6 +34,15 @@ const routes: Routes = [
   {path: 'produit-form/:id', component: FormProduitComponent},
   {path: 'form-produit', component: FormProduitComponent},
   {path: 'details-produit/:id', component: DetailProduitComponent},
+  {path: 'categories', component: ListeCategoriesComponent},
+  {path: 'details-categorie/:id', component: DetailsCategorieComponent},
+  {path: 'categorie-form', component: CategoriesFormComponent},
+  {path: 'categorie-form/:id', component: CategoriesFormComponent},
+  {path: 'commandes', component: ListeCommandesComponent},
+  {path: 'commande-form', component: CommandesFormComponent},
+  {path: 'commande-form/:id', component: CommandesFormComponent},
+  {path: 'detail-commande/:id', component: DetailCommandeComponent},
+
 ];
 
 @NgModule({

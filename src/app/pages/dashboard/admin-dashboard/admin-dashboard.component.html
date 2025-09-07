@@ -76,7 +76,7 @@
           <div class="stat-label">Produits en stock</div>
         </div>
         <div class="card-footer">
-          <a routerLink="/admin/produits" class="btn-link">Gérer le stock <i class="fas fa-arrow-right"></i></a>
+          <a routerLink="/produits" class="btn-link">Gérer le stock <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
 
@@ -127,9 +127,9 @@
           <tbody>
             <tr *ngFor="let commande of commandesRecentes">
               <td>#{{ commande.id }}</td>
-              <td>{{ commande.user?.name || 'Inconnu' }}</td>
-              <td>{{ commande.created_at | date:'dd/MM/yy HH:mm' }}</td>
-              <td>{{ formatCurrency(commande.montant_total) }}</td>
+              <td>{{ commande.client }}</td>
+              <td>{{ commande.date_commande| date:'dd/MM/yy HH:mm' }}</td>
+              <td>{{ formatCurrency(commande.total) }}</td>
               <td><span [class]="'status-badge ' + getStatutClass(commande.statut)"></span></td>
             </tr>
             <tr *ngIf="commandesRecentes.length === 0">
@@ -147,7 +147,7 @@
       </div>
       <div class="products-list">
         <div *ngFor="let produit of produitsPopulaires" class="product-item">
-          <img [src]="produit.image_principale || 'assets/images/placeholder-product.png'" [alt]="produit.nom">
+          <img [src]="getImageUrl(produit) || 'assets/images/placeholder-product.png'" [alt]="produit.nom">
           <div class="product-info">
             <h3>{{ produit.nom }}</h3>
             <p class="price">{{ formatCurrency(produit.prix) }}</p>

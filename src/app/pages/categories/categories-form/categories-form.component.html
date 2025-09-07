@@ -1,1 +1,43 @@
-<p>categories-form works!</p>
+<div class="categorie-form-container">
+  <div class="form-header">
+    <h1>{{ isEditMode ? 'Modifier une catégorie' : 'Ajouter une nouvelle catégorie' }}</h1>
+    <p>
+      {{ isEditMode ? 'Mettez à jour les informations de la catégorie' : 'Créez une nouvelle catégorie pour vos produits' }}
+    </p>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert error-alert">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert success-alert">{{ successMessage }}</div>
+
+  <form [formGroup]="categorieForm" (ngSubmit)="onSubmit()" *ngIf="!loading; else loadingTpl">
+    <div class="form-group">
+      <label for="nom">Nom de la catégorie</label>
+      <input id="nom" type="text" formControlName="nom" placeholder="Ex: Viennoiseries" />
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" rows="4" formControlName="description"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="position">Position</label>
+      <input id="position" type="number" formControlName="position" />
+    </div>
+
+    <div class="form-group checkbox-group">
+      <label>
+        <input type="checkbox" formControlName="actif" />
+        Actif
+      </label>
+    </div>
+
+    <button type="submit" [disabled]="categorieForm.invalid" class="btn-submit">
+      {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+    </button>
+  </form>
+
+  <ng-template #loadingTpl>
+    <div class="loading">Chargement des données...</div>
+  </ng-template>
+</div>

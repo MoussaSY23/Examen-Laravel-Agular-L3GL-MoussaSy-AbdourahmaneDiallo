@@ -191,6 +191,11 @@ export class ProduitService {
     );
   }
 
+    getProduitsParCategorie2(categorieId: number): Observable<Produit[]> {
+    return this.http.get<Produit[]>(`${this.API_URL}/produits/categorie/${categorieId}`, { headers: this.getAuthHeaders() })
+      .pipe(catchError(this.handleError));
+  }
+
   // Téléverser une image
   uploadImage(file: File): Observable<UploadResponse> {
     const formData = new FormData();
@@ -225,6 +230,11 @@ export class ProduitService {
         return throwError(() => error);
       })
     );
+  }
+
+    getCategories2(): Observable<Categorie[]> {
+    return this.http.get<Categorie[]>(`${this.API_URL}/categories`, { headers: this.getAuthHeaders() })
+      .pipe(catchError(this.handleError));
   }
 
   // Appliquer une promotion à un produit

@@ -1,1 +1,49 @@
-<p>liste-commandes works!</p>
+<div class="container mt-4">
+  <h2>Liste des commandes</h2>
+
+  <table class="table table-striped mt-3" *ngIf="!isLoading; else loading">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Client</th>
+        <th>Employé</th>
+        <th>Total</th>
+        <th>Statut</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let commande of commandes">
+        <td>{{ commande.id }}</td>
+        <td>{{ commande.client?.name }}</td>
+        <td>{{ commande.employe?.name || '-' }}</td>
+        <td>{{ commande.total | currency:'EUR' }}</td>
+        <td>
+          <span [ngClass]="{
+            'badge bg-warning': commande.statut === 'en_preparation',
+            'badge bg-info': commande.statut === 'en_livraison',
+            'badge bg-success': commande.statut === 'livree',
+            'badge bg-danger': commande.statut === 'annulee'
+          }">
+            {{ commande.statut }}
+          </span>
+        </td>
+        <td>{{ commande.date_commande | date:'short' }}</td>
+        <td>
+          <button class="btn btn-sm btn-primary me-1" (click)="changerStatut(commande, 'en_preparation')">En préparation</button>
+          <button class="btn btn-sm btn-info me-1" (click)="changerStatut(commande, 'en_livraison')">En livraison</button>
+          <button class="btn btn-sm btn-success me-1" (click)="changerStatut(commande, 'livree')">Livrée</button>
+          <button class="btn btn-sm btn-secondary me-1" (click)="telechargerFacture(commande)">PDF</button>
+          <button class="btn btn-sm btn-warning" (click)="envoyerFacture(commande)">Envoyer Email</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #loading>
+    <div class="text-center mt-4">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  </ng-template>
+</div>

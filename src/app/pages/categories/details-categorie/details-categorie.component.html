@@ -1,0 +1,87 @@
+<div class="details-categorie-page bg-slate-50 min-h-screen font-sans text-gray-800">
+
+  <!-- ---------------- Bannière ---------------- -->
+  <header class="relative overflow-hidden pt-16 pb-24 rounded-b-3xl text-white
+                 bg-gradient-to-r from-[#182848] to-[#4b6cb7] shadow-lg">
+    <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
+      <h1 class="text-3xl sm:text-4xl font-extrabold mb-2 leading-tight">
+        {{ categorie?.nom || 'Catégorie' }}
+      </h1>
+      <p class="text-lg opacity-90 mb-6">
+        {{ categorie?.description || 'Aucune description disponible pour cette catégorie.' }}
+      </p>
+      <button class="bg-white/20 text-white border border-white/30 px-5 py-2.5 font-semibold rounded-xl
+                     shadow-lg transition-all hover:bg-white/30 active:scale-95"
+              routerLink="/categories">
+        ← Retour aux catégories
+      </button>
+    </div>
+  </header>
+
+  <!-- ---------------- Attributs de la catégorie ---------------- -->
+  <section class="max-w-6xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold mb-8 text-center text-gray-900">Informations sur la catégorie</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition">
+        <h3 class="text-lg font-semibold text-[#4b6cb7] mb-2">Nombre de produits</h3>
+        <p class="text-2xl font-bold">{{ produits.length }}</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition">
+        <h3 class="text-lg font-semibold text-[#4b6cb7] mb-2">Actif</h3>
+   
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition">
+        <h3 class="text-lg font-semibold text-[#4b6cb7] mb-2">Position</h3>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- Produits ---------------- -->
+  <section class="max-w-6xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold mb-8 text-gray-900">Produits de cette catégorie</h2>
+    <div *ngIf="loading" class="text-center py-12 text-gray-500">Chargement…</div>
+    <div *ngIf="error" class="text-center py-12 text-red-600">{{ error }}</div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <article *ngFor="let produit of produits"
+               class="relative bg-white rounded-2xl shadow-lg overflow-hidden
+                      transition-all hover:-translate-y-1.5 hover:shadow-2xl cursor-pointer"
+               (click)="goToProduitDetails(produit.id)">
+        <div class="relative h-48">
+          <img class="w-full h-full object-cover" [src]="getImageUrl(produit)" [alt]="produit.nom" />
+          <span class="absolute top-3 -left-2 bg-red-600 text-white font-bold text-xs py-1.5 px-3 rounded-lg shadow-lg -rotate-3"
+                *ngIf="produit.en_promotion">Promo</span>
+          <span class="absolute bottom-3 right-3 px-3 py-1 text-xs font-semibold rounded-full"
+                [ngClass]="{
+                  'bg-green-100 text-green-800': getStatut(produit) === 'En stock',
+                  'bg-orange-100 text-orange-800': getStatut(produit) === 'Stock faible',
+                  'bg-red-100 text-red-800': getStatut(produit) === 'Rupture'
+                }">{{ getStatut(produit) }}</span>
+        </div>
+        <div class="p-4">
+          <h3 class="text-lg font-bold mb-1">{{ produit.nom }}</h3>
+          <div class="flex items-baseline gap-2 mb-2">
+            <span class="text-lg font-bold text-red-600" *ngIf="produit.en_promotion">{{ produit.prix_promotion | currency:'XOF' }}</span>
+            <span [ngClass]="{'text-sm text-gray-400 line-through': produit.en_promotion, 'text-lg font-bold text-gray-900': !produit.en_promotion}">
+              {{ produit.prix | currency:'XOF' }}
+            </span>
+          </div>
+          <div class="text-sm text-gray-600 flex items-center">
+            <i class="fa-solid fa-box-open text-indigo-600 mr-2"></i> {{ produit.stock }} {{ produit.unite || '' }}
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ---------------- Boutons rapides ---------------- -->
+  <div class="text-center my-12">
+    <button class="bg-[#182848] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#4b6cb7] transition"
+            routerLink="/categories">Voir toutes les catégories</button>
+  </div>
+
+  <footer class="py-8 text-center text-gray-500 text-sm">
+    Application de gestion © {{ currentYear }}
+  </footer>
+</div>

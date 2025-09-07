@@ -27,6 +27,7 @@ import { AdminDashboardComponent } from './pages/dashboard/admin-dashboard/admin
 import { NavbarComponent } from './pages/navbar/navbar.component';
 import { AuthInterceptor } from './interceptors/interceptor';
 import { FormProduitComponent } from './pages/produits/form-produit/form-produit.component';
+import { DetailsCategorieComponent } from './pages/categories/details-categorie/details-categorie.component';
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import { FormProduitComponent } from './pages/produits/form-produit/form-produit
     ProduitsComponent,
     AdminDashboardComponent,
     NavbarComponent,
-    FormProduitComponent
+    FormProduitComponent,
+    DetailsCategorieComponent
   ],
   imports: [
     CommonModule,
