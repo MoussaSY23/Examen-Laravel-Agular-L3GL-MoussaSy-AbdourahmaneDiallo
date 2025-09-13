@@ -28,6 +28,7 @@ export class FormProduitComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // ✅ Initialise toujours le form en premier
     this.produitForm = this.fb.group({
       nom: ['', Validators.required],
       description: [''],
@@ -44,7 +45,7 @@ export class FormProduitComponent implements OnInit {
 
     this.loadCategories();
 
-    // ✅ Écoute des changements d'ID dans l'URL
+    // ✅ Détection mode édition / ajout
     this.route.paramMap.subscribe(paramMap => {
       const idParam = paramMap.get('id');
       if (idParam) {
@@ -70,7 +71,6 @@ export class FormProduitComponent implements OnInit {
     this.loading = true;
     this.produitService.getProduit(id).subscribe({
       next: (p) => {
-        console.log('Produit chargé', p);
         this.produitForm.patchValue({
           nom: p.nom,
           description: p.description,
@@ -110,7 +110,7 @@ export class FormProduitComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.produitForm.invalid) {
+    if (!this.produitForm || this.produitForm.invalid) {
       this.produitForm.markAllAsTouched();
       return;
     }
@@ -177,6 +177,7 @@ export class FormProduitComponent implements OnInit {
   }
 
   resetForm() {
+    if (!this.produitForm) return;
     this.produitForm.reset({
       nom: '',
       description: '',

@@ -24,3 +24,9 @@ export interface Produit {
     updated_at?: string;
   };
 }
+
+
+export interface CartItem extends Produit {
+  quantity: number;
+  total: number;
+}

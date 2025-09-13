@@ -1,0 +1,142 @@
+<!-- src/app/pages/panier/panier.component.html -->
+<div class="container mx-auto p-4">
+
+  <!-- ---------------- Panier & Résumé ---------------- -->
+  <div class="flex flex-col lg:flex-row gap-8">
+
+    <!-- Partie gauche : Produits -->
+    <div class="flex-1 space-y-4">
+      <h2 class="text-2xl font-bold mb-4 text-gray-800">🛒 Récapitulatif de mon panier</h2>
+
+      <div *ngFor="let p of panier?.produits" class="flex items-center bg-white shadow rounded-lg p-4 space-x-4">
+        <img [src]="getProduitImageUrl(p.prod)" [alt]="p.prod?.nom" class="w-20 h-20 object-cover rounded-md">
+        <div class="flex-1 space-y-1">
+          <h4 class="font-semibold text-gray-800">{{ p.prod?.nom }}</h4>
+          <p class="text-gray-500 text-sm">{{ p.prod?.description }}</p>
+          <div class="flex flex-wrap gap-2 text-sm mt-1">
+            <span class="bg-gray-100 px-2 py-1 rounded">Quantité : {{ p.quantite }}</span>
+            <span class="bg-gray-100 px-2 py-1 rounded">Prix unitaire : {{ formatPrice(p.prix_unitaire) }}</span>
+            <span class="bg-gray-100 px-2 py-1 rounded font-semibold">Total : {{ formatPrice(p.prix_total) }}</span>
+          </div>
+        </div>
+        <button class="text-red-600 hover:text-red-800 text-lg" (click)="supprimerProduit(p.prod?.id)">🗑</button>
+      </div>
+
+      <a href="#" class="text-orange-500 font-bold hover:underline mt-2 inline-block">← Continuer mes achats</a>
+    </div>
+
+    <!-- Partie droite : Résumé -->
+    <div class="w-full lg:w-80 space-y-4">
+      <div class="bg-gray-50 rounded-lg p-4 shadow space-y-3">
+        <h3 class="text-lg font-bold text-gray-800">Résumé de commande</h3>
+        <div class="flex justify-between text-gray-700">
+          <span>Produits</span>
+          <span>{{ formatPrice(calculerTotalGlobal()) }}</span>
+        </div>
+        <div class="flex justify-between text-gray-700">
+          <span>Livraison</span>
+          <span>{{ formatPrice(2000) }}</span>
+        </div>
+        <div class="flex justify-between font-bold text-gray-900 border-t border-gray-300 pt-2">
+          <span>Total</span>
+          <span>{{ formatPrice(calculerTotalGlobal() + 2000) }}</span>
+        </div>
+        <button class="w-full bg-blue-900 text-white py-2 rounded hover:bg-orange-500 transition-colors" (click)="validerCommande()">✅ Valider ma commande</button>
+      </div>
+
+      <div class="flex gap-2">
+        <input type="text" placeholder="Mon bon de réduction" class="flex-1 border border-gray-300 rounded px-2 py-1">
+        <button class="bg-orange-500 text-white px-4 rounded hover:bg-blue-900 transition-colors">Ajouter</button>
+      </div>
+
+      <div class="bg-white rounded-lg p-3 shadow text-gray-600 text-sm space-y-1">
+        <p>📦 Expédié en 24h maximum</p>
+        <p>🚚 Frais de port offerts dès 50K</p>
+        <p>🔒 Paiement ultra sécurisé</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- Promotions / Offres ---------------- -->
+  <section class="mt-12">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Offres spéciales</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-blue-100 text-blue-900 p-4 rounded-lg shadow">
+        <h3 class="font-semibold">-10% sur les viennoiseries</h3>
+        <p class="text-sm mt-1">Pour toute commande avant midi.</p>
+      </div>
+      <div class="bg-orange-100 text-orange-900 p-4 rounded-lg shadow">
+        <h3 class="font-semibold">Achetez 2 pains, 3ème offert</h3>
+        <p class="text-sm mt-1">Offre valable aujourd'hui.</p>
+      </div>
+      <div class="bg-green-100 text-green-900 p-4 rounded-lg shadow">
+        <h3 class="font-semibold">Livraison gratuite dès 50K</h3>
+        <p class="text-sm mt-1">Profitez de nos promotions.</p>
+      </div>
+      <div class="bg-purple-100 text-purple-900 p-4 rounded-lg shadow">
+        <h3 class="font-semibold">Pack petit-déjeuner</h3>
+        <p class="text-sm mt-1">Sélection de produits frais.</p>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- ---------------- Avantages / Confiance ---------------- -->
+  <section class="mt-12 bg-blue-900 text-white rounded-lg p-8 flex flex-col lg:flex-row items-center gap-6">
+    <div class="flex-1 space-y-2">
+      <h2 class="text-2xl font-bold">Pourquoi commander chez nous ?</h2>
+      <p class="text-gray-100">Nous garantissons la fraîcheur, la qualité et la rapidité de livraison de vos produits préférés.</p>
+    </div>
+    <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="flex items-center gap-2"><span>📦</span> <span>Livraison rapide</span></div>
+      <div class="flex items-center gap-2"><span>🔒</span> <span>Paiement sécurisé</span></div>
+      <div class="flex items-center gap-2"><span>🥖</span> <span>Produits frais quotidiennement</span></div>
+      <div class="flex items-center gap-2"><span>💰</span> <span>Offres et promotions régulières</span></div>
+    </div>
+  </section>
+
+  <!-- ---------------- FAQ / Aide ---------------- -->
+  <section class="mt-12 bg-gray-50 p-8 rounded-lg shadow">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Besoin d’aide ?</h2>
+    <p class="text-gray-600">Consultez notre FAQ ou contactez notre support si vous avez des questions concernant votre commande.</p>
+    <button class="mt-3 bg-blue-900 text-white py-2 px-4 rounded hover:bg-orange-500 transition-colors">Contactez-nous</button>
+  </section>
+
+  <!-- ---------------- Témoignages ---------------- -->
+  <section class="mt-12">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Avis clients</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="bg-white shadow rounded-lg p-4">
+        <p class="text-gray-600 italic">“Très bons produits et livraison rapide !”</p>
+        <p class="text-gray-800 font-semibold mt-2">— Aminata D.</p>
+      </div>
+      <div class="bg-white shadow rounded-lg p-4">
+        <p class="text-gray-600 italic">“Excellent service, je recommande !”</p>
+        <p class="text-gray-800 font-semibold mt-2">— Moussa K.</p>
+      </div>
+      <div class="bg-white shadow rounded-lg p-4">
+        <p class="text-gray-600 italic">“Produits frais et savoureux, top !”</p>
+        <p class="text-gray-800 font-semibold mt-2">— Fatou S.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- Modal de confirmation ---------------- -->
+  <div *ngIf="showSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black/50" (click)="closeSuccessModal()"></div>
+    <div class="bg-white rounded-lg shadow-lg z-10 max-w-md w-full p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg font-bold text-gray-800">Commande validée !</h3>
+        <button class="text-gray-500 hover:text-gray-800 text-2xl font-bold" (click)="closeSuccessModal()">×</button>
+      </div>
+      <p class="text-gray-600">Votre commande a été validée avec succès.</p>
+      <p class="text-gray-600">La facture a été générée et un email vous a été envoyé.</p>
+      <div class="flex justify-end gap-2">
+        <button class="bg-gray-100 text-gray-800 py-2 px-4 rounded hover:bg-gray-200" (click)="continueShopping()">Continuer mes achats</button>
+        <button class="bg-blue-900 text-white py-2 px-4 rounded hover:bg-orange-500" (click)="goToOrders()">Voir mes commandes</button>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,3 +1,9 @@
+/* Rich cart toast */
+.toast-cart{display:flex;align-items:center;gap:10px}
+.toast-cart img{width:42px;height:42px;border-radius:6px;object-fit:cover;border:1px solid rgba(0,0,0,0.05)}
+.toast-cart .info{display:flex;flex-direction:column;line-height:1.2}
+.toast-cart .info .title{font-weight:700;color:#16a34a}
+.toast-cart .info .name{font-weight:600;color:#111827}
 /* You can add global styles to this file, and also import other style files */
 @tailwind base;
 @tailwind components;

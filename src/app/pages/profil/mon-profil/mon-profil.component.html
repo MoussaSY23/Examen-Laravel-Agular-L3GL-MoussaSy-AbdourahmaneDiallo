@@ -1,12 +1,16 @@
 <div class="profil-container" *ngIf="user">
+  <!-- Loading overlay -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner"></div>
+  </div>
   <!-- En-tête -->
   <div class="profil-header">
     <div class="avatar-wrapper">
       <img [src]="getAvatarUrl()" alt="Avatar" class="avatar" />
-      <label for="avatar-upload" class="avatar-edit">
+      <label for="avatar-upload" class="avatar-edit" *ngIf="editMode">
         <i class="fas fa-camera"></i>
       </label>
-      <input id="avatar-upload" type="file" (change)="onAvatarChange($event)" hidden />
+      <input #avatarInput id="avatar-upload" type="file" (change)="onAvatarChange($event)" hidden />
     </div>
     <h2 class="user-name">{{ user.name }}</h2>
     <p class="user-role">Membre Premium</p>
@@ -35,6 +39,13 @@
   <form *ngIf="editMode" [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profil-form">
     <h3>Modifier mon profil</h3>
     <div class="form-group">
+      <label>Photo de profil</label>
+      <div class="avatar-inline">
+        <img [src]="getAvatarUrl()" alt="Aperçu" class="avatar small" />
+        <button type="button" class="btn-secondary" (click)="avatarInput.click()">Changer la photo</button>
+      </div>
+    </div>
+    <div class="form-group">
       <label>Nom</label>
       <input formControlName="name" type="text" />
     </div>
@@ -62,8 +73,11 @@
       <label>Confirmer mot de passe</label>
       <input formControlName="password_confirmation" type="password" placeholder="Laisser vide si inchangé" />
     </div>
-    <button type="submit" class="btn-save" [disabled]="isLoading">
-      {{ isLoading ? 'Enregistrement...' : 'Enregistrer' }}
-    </button>
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="cancelEdit()" [disabled]="isLoading">Annuler</button>
+      <button type="submit" class="btn-save" [disabled]="isLoading">
+        {{ isLoading ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
   </form>
 </div>

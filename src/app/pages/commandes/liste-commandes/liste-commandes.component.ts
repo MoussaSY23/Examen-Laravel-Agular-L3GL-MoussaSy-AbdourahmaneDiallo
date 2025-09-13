@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CommandeService } from '../../../services/commande/commande.service';
 import { Commande, ProduitCommande } from '../../../models/commande';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-liste-commandes',
@@ -13,18 +15,50 @@ export class ListeCommandesComponent implements OnInit {
   isLoading = true;
   searchText = '';
   filterStatut = 'tous';
+  private fromQueryStatut: string | null = null;
 
-  constructor(private commandeService: CommandeService) {}
+  constructor(
+    private commandeService: CommandeService,
+    private authService: AuthService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.loadCommandes();
+    this.route.queryParamMap.subscribe((params) => {
+      this.fromQueryStatut = params.get('statut');
+      if (this.fromQueryStatut) {
+        this.filterStatut = this.fromQueryStatut;
+      }
+      this.loadCommandes();
+    });
+  }
+
+  isClient(): boolean {
+    return this.authService.currentUserValue?.role === 'client';
+  }
+
+  isEmployee(): boolean {
+    return this.authService.currentUserValue?.role === 'employee';
   }
 
   loadCommandes(): void {
     this.isLoading = true;
-    this.commandeService.getCommandes().subscribe({
-      next: (res: any) => {
-        this.commandes = res.data;
+    const me = this.authService.currentUserValue;
+    const obs = (me?.role === 'client')
+      ? this.commandeService.getCommandesUtilisateur((me!.id as number))
+      : this.commandeService.getCommandes();
+
+    obs.subscribe({
+      next: (commandes: Commande[]) => {
+        // Afficher uniquement les commandes validées (exclure le panier en préparation)
+        let list = (commandes || []).filter((c: Commande) => c.statut !== 'en_preparation');
+
+        if (me?.role === 'employee') {
+          list = list.filter((c: any) => c?.employe?.id === me.id);
+        }
+        // Si client: on a déjà filtré par l'utilisateur via l'endpoint getCommandesUtilisateur
+
+        this.commandes = list;
         this.applyFilters();
         this.isLoading = false;
       },
@@ -33,8 +67,20 @@ export class ListeCommandesComponent implements OnInit {
   }
 
   applyFilters(): void {
-    this.filteredCommandes = this.commandes.filter(cmd => {
-      const matchesStatut = this.filterStatut === 'tous' || cmd.statut === this.filterStatut;
+    const me = this.authService.currentUserValue;
+    this.filteredCommandes = this.commandes
+      // sécurité: s'assurer qu'on n'affiche jamais 'en_preparation'
+      .filter(c => c.statut !== 'en_preparation')
+      .filter(cmd => {
+      // Exclure 'livree' par défaut pour admin/employé si aucun filtre explicite
+      let matchesStatut = true;
+      if (this.filterStatut === 'tous') {
+        if (me && me.role !== 'client') {
+          matchesStatut = cmd.statut !== 'livree';
+        }
+      } else {
+        matchesStatut = cmd.statut === this.filterStatut;
+      }
       const matchesSearch = !this.searchText || cmd.client?.name.toLowerCase().includes(this.searchText.toLowerCase()) || cmd.id.toString().includes(this.searchText);
       return matchesStatut && matchesSearch;
     });

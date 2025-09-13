@@ -1,0 +1,17 @@
+.chat-wrapper{max-width:900px;margin:20px auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.05)}
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #eee;background:#f9fafb}
+.chat-header h3{margin:0;font-weight:700;color:#111827}
+.chat-header .participants{display:flex;align-items:center;gap:8px}
+.badge{background:#eee;border-radius:999px;padding:6px 10px;font-weight:600;color:#374151}
+.badge.blue{background:#dbeafe;color:#1e40af}
+.chat-body{height:420px;overflow:auto;background:#fafafa;padding:12px}
+.msg{display:flex;margin:6px 0}
+.msg.mine{justify-content:flex-end}
+.bubble{max-width:70%;padding:10px 12px;border-radius:12px;background:#fff;border:1px solid #e5e7eb}
+.msg.mine .bubble{background:#2563eb;color:#fff;border-color:#1d4ed8}
+.bubble .content{white-space:pre-wrap}
+.bubble .meta{font-size:12px;margin-top:4px;opacity:.8}
+.chat-footer{display:flex;gap:8px;padding:10px;border-top:1px solid #eee;background:#fff}
+.chat-footer input{flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:10px}
+.chat-footer .send{background:#2563eb;color:#fff;border:0;border-radius:8px;padding:10px 14px;font-weight:600;cursor:pointer}
+.chat-footer .send:hover{background:#1d4ed8}

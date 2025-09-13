@@ -4,6 +4,11 @@ import { CategorieService } from '../../../services/categorie/categorie.service'
 import { Produit } from '../../../models/produit';
 import { Categorie } from '../../../models/categorie';
 import { Router } from '@angular/router';
+import { CommandeService } from '../../../services/commande/commande.service';
+import { ToastrService } from 'ngx-toastr';
+import { User } from '../../../models/user';
+import { AuthService } from '../../../services/auth/auth.service';
+
 
 @Component({
   selector: 'app-produits',
@@ -12,6 +17,7 @@ import { Router } from '@angular/router';
 })
 export class ProduitsComponent implements OnInit {
 
+    user: User | null = null;
   produits: Produit[] = [];
   produitsFiltres: Produit[] = [];
   categories: Categorie[] = [];
@@ -29,14 +35,30 @@ export class ProduitsComponent implements OnInit {
   constructor(
     private produitService: ProduitService,
     private categorieService: CategorieService,
-    public router: Router
+    public router: Router,
+     private commandeService: CommandeService,
+  private toastr: ToastrService,
+  private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.user = this.authService.getCurrentUser();
     this.getCategories();
     this.getProduits();
   }
 
+  isAdmin(): boolean {
+    return this.user?.role === 'admin';
+  }
+
+  isEmploye(): boolean {
+    return this.user?.role === 'employee';
+  }
+
+  isClient(): boolean {
+    return this.user?.role === 'client';
+  }
+  
   getCategories(): void {
     this.categorieService.getCategories().subscribe({
       next: (data) => (this.categories = data),
@@ -138,4 +160,39 @@ export class ProduitsComponent implements OnInit {
 
   trackByProduit = (_: number, p: Produit) => p.id;
   trackByCategorie = (_: number, c: Categorie) => c.id;
+
+  ajouterAuPanier(produit: Produit): void {
+  if (produit.stock <= 0) {
+    this.toastr.error("Produit en rupture de stock", "Impossible d'ajouter");
+    return;
+  }
+
+  this.commandeService.addProduitAuPanier(produit.id, 1).subscribe({
+    next: () => {
+      const image = this.getImageUrl(produit);
+      this.toastr.success(
+        `<div class="toast-cart">
+          <img src="${image}" alt="${produit.nom}"/>
+          <div class="info">
+            <div class="title">Ajouté au panier</div>
+            <div class="name">${produit.nom}</div>
+          </div>
+        </div>`,
+        '',
+        {
+          enableHtml: true,
+          closeButton: true,
+          progressBar: true,
+          timeOut: 2500,
+          positionClass: 'toast-top-right'
+        }
+      );
+    },
+    error: (err) => {
+      console.error(err);
+      this.toastr.error("Impossible d'ajouter le produit au panier");
+    }
+  });
+}
+
 }

@@ -16,21 +16,37 @@ import { DetailsCategorieComponent } from './pages/categories/details-categorie/
 import { CategoriesFormComponent } from './pages/categories/categories-form/categories-form.component';
 import { CommandesFormComponent } from './pages/commandes/commandes-form/commandes-form.component';
 import { ListeCommandesComponent } from './pages/commandes/liste-commandes/liste-commandes.component';
+import { MesCommandesComponent } from './pages/commandes/mes-commandes/mes-commandes.component';
 import { DetailCommandeComponent } from './pages/commandes/detail-commande/detail-commande.component';
+import { CommandePanierComponent } from './pages/commandes/commande-panier/commande-panier.component';
+import { ChatComponent } from './pages/chat/chat.component';
+import { ConversationsComponent } from './pages/conversations/conversations.component';
+import { AuthGuard } from './utils/guards/auth.guard';
+import { roleGuard } from './utils/guards/role.guard';
+import { NotFoundComponent } from './utils/not-found/not-found.component';
+import { UsersManagementComponent } from './pages/users/users-management/users-management.component';
+import { ClientDashboardComponent } from './pages/dashboard/client-dashboard/client-dashboard.component';
+import { AddProduitComponent } from './pages/produits/add-produit/add-produit.component';
+
+
+
 
 
 const routes: Routes = [
+
   {path: '', component: HomeComponent},
-   { 
-    path: 'auth/Connexion',  component: LoginComponent},
+  {path: 'not-found', component: NotFoundComponent},
+  {path: 'auth/Connexion', component: LoginComponent},
   {path: 'auth/Inscription', component: RegisterComponent},
   {path: 'home', component: HomeComponent},
   {path: 'service', component: ServiceComponent},
   {path: 'Apropos', component: AproposComponent},
   {path: 'produits', component: ProduitsComponent},
-  {path: 'admin-dashboard', component: AdminDashboardComponent},
-  {path: 'mon-profil', component: MonProfilComponent},
-  {path: 'produit-form', component: ProduitFormComponent},
+  {path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin', 'employee'] }},
+  {path: 'client-dashboard', component: ClientDashboardComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['client'] }},
+  {path: 'admin/users', component: UsersManagementComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin'] }},
+  {path: 'mon-profil', component: MonProfilComponent, canActivate: [AuthGuard]},
+  {path: 'produit-form', component: AddProduitComponent},
   {path: 'produit-form/:id', component: FormProduitComponent},
   {path: 'form-produit', component: FormProduitComponent},
   {path: 'details-produit/:id', component: DetailProduitComponent},
@@ -38,11 +54,18 @@ const routes: Routes = [
   {path: 'details-categorie/:id', component: DetailsCategorieComponent},
   {path: 'categorie-form', component: CategoriesFormComponent},
   {path: 'categorie-form/:id', component: CategoriesFormComponent},
-  {path: 'commandes', component: ListeCommandesComponent},
+  {path: 'commandes', component: ListeCommandesComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin','employee'] }},
   {path: 'commande-form', component: CommandesFormComponent},
   {path: 'commande-form/:id', component: CommandesFormComponent},
-  {path: 'detail-commande/:id', component: DetailCommandeComponent},
+  {path: 'detail-commande/:id', component: DetailCommandeComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin','employee'] }},
+  {path: 'panier', component: CommandePanierComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['client'] }},
+  {path: 'mes-commandes', component: MesCommandesComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['client'] }},
+  {path: 'chat/commande/:commandeId', component: ChatComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin','employee','client'] }},
+  {path: 'chat/:clientId', component: ChatComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin','employee','client'] }},
+  {path: 'chat/:clientId/:employeId', component: ChatComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin','employee','client'] }},
+  {path: 'conversations', component: ConversationsComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin','employee','client'] }},
 
+  {path: 'admin/users', component: UsersManagementComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin'] }}
 ];
 
 @NgModule({

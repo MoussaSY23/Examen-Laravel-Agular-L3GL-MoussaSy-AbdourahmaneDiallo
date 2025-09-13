@@ -1,7 +1,7 @@
-<div class="form-container" *ngIf="!loading; else loadingTpl">
+<div class="form-container" *ngIf="!loading && produitForm; else loadingTpl">
   <h2>{{ isEditMode ? 'Modifier un produit' : 'Ajouter un produit' }}</h2>
 
-  <form [formGroup]="produitForm" (ngSubmit)="onSubmit()">
+  <form *ngIf="produitForm" [formGroup]="produitForm" (ngSubmit)="onSubmit()">
     <div class="form-row">
       <label>Nom *</label>
       <input formControlName="nom" placeholder="Nom du produit"/>

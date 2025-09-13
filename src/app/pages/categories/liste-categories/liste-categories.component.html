@@ -8,7 +8,7 @@
       Découvrez nos délicieuses catégories de produits frais et artisanaux, 
       avec des offres exclusives et nos nouveautés quotidiennes.
     </p>
-    <button class="btn-cta" routerLink="/categorie-form">+ Ajouter une catégorie</button>
+    <button *ngIf="isAdmin()" class="btn-cta" routerLink="/categorie-form">+ Ajouter une catégorie</button>
   </div>
 
   <!-- ---------------- Explorer par catégories ---------------- -->
@@ -24,7 +24,7 @@
           </div>
           <div class="category-actions">
             <button class="btn-details" (click)="goToCategorieDetails(categorie.id)">Voir plus</button>
-            <button class="btn-edit" [routerLink]="['/categorie-form', categorie.id]">Modifier</button>
+            <button *ngIf="isAdmin()" class="btn-edit" [routerLink]="['/categorie-form', categorie.id]">Modifier</button>
           </div>
         </div>
       </div>
@@ -60,20 +60,62 @@
       </div>
     </div>
   </section>
+    <!-- ----------------  ---------------- -->
 
-  <!-- ---------------- Infos supplémentaires ---------------- -->
-  <section class="categories-info">
+
+  
+
+   
+  <!-- ----------------  ---------------- -->
+
+  <section class="categories-faq">
     <div class="container">
-      <h2>Pourquoi choisir notre boulangerie ?</h2>
-      <p>Chaque catégorie de produits est préparée avec soin, en respectant la qualité et la fraîcheur :</p>
-      <ul>
-        <li>Produits artisanaux faits maison</li>
-        <li>Ingrédients de qualité supérieure</li>
-        <li>Variété de choix pour tous les goûts</li>
-        <li>Offres et promotions régulières</li>
-      </ul>
+      <h2>Questions fréquentes</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h4>Proposez-vous des produits sans gluten ?</h4>
+          <p>Oui, une catégorie est dédiée aux pains et pâtisseries sans gluten.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Les promotions s’appliquent-elles à toutes les catégories ?</h4>
+          <p>Certaines offres concernent des produits spécifiques, vérifiez la section promotions.</p>
+        </div>
+      </div>
     </div>
   </section>
+  
+    <!-- ----------------  ---------------- -->
+    <section class="final-cta">
+      <div class="container text-center">
+        <h2>Prêt à découvrir toutes nos spécialités ?</h2>
+        <p>Commandez en ligne ou visitez notre boulangerie pour goûter nos créations artisanales.</p>
+        <button class="btn-primary" (click)="goToProduits()">Explorer les produits</button>
+      </div>
+    </section>
+    
+  
+  <!-- ---------------- Infos supplémentaires ---------------- -->
+  <section class="categories-info">
+    <div class="container categories-info-grid">
+      <!-- Texte à gauche -->
+      <div class="categories-info-text">
+        <h2>Pourquoi choisir notre boulangerie ?</h2>
+        <p>Chaque catégorie de produits est préparée avec soin, en respectant la qualité et la fraîcheur :</p>
+        <ul>
+          <li>Produits artisanaux faits maison</li>
+          <li>Ingrédients de qualité supérieure</li>
+          <li>Variété de choix pour tous les goûts</li>
+          <li>Offres et promotions régulières</li>
+        </ul>
+      </div>
+  
+      <!-- Image à droite -->
+      <div class="categories-info-image">
+        <img src="../../../../assets/premium_photo-1665669263531-cdcbe18e7fe4.jpeg" alt="Boulangerie">
+      </div>
+    </div>
+  </section>
+  
 
   <!-- ---------------- Quick actions / CTA ---------------- -->
   <section class="quick-actions">

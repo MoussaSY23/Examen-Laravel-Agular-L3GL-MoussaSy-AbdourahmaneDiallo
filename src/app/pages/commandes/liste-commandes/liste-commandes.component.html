@@ -121,9 +121,26 @@
             </td>
             <td class="total-cell">{{ cmd.total | currency:'FCFA':'symbol' }}</td>
             <td class="actions-cell">
-              <button class="btn btn-detail" [routerLink]="['/detail-commande', cmd.id]">
-                <i class="fas fa-eye"></i> Voir détails
-              </button>
+              <div class="actions-flex">
+                <button class="btn btn-detail" [routerLink]="['/detail-commande', cmd.id]">
+                  <i class="fas fa-eye"></i> Voir détails
+                </button>
+                <!-- Bouton chat pour le client -->
+                <button *ngIf="isClient() && cmd.statut !== 'livree'" class="btn btn-detail" [routerLink]="['/chat/commande', cmd.id]">
+                  <i class="fas fa-comments"></i> Converser
+                </button>
+                <div class="status-update">
+                  <select #statutSelect [value]="cmd.statut">
+                    <option value="en_preparation">En préparation</option>
+                    <option value="en_livraison">En livraison</option>
+                    <option value="livree">Livrée</option>
+                    <option value="annulee">Annulée</option>
+                  </select>
+                  <button class="btn btn-update" (click)="changerStatut(cmd, statutSelect.value)" [disabled]="statutSelect.value === cmd.statut">
+                    <i class="fas fa-sync"></i>
+                  </button>
+                </div>
+              </div>
             </td>
           </tr>
         </tbody>

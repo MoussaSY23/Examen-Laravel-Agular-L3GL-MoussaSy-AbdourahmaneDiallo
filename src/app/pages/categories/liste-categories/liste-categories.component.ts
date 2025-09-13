@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CategorieService } from '../../../services/categorie/categorie.service';
 import { ProduitsService, Produit } from '../../../services/produit/test/produits.service';
 import { Categorie } from '../../../models/categorie';
-
+import { AuthService } from '../../../services/auth/auth.service';
 import { Router } from '@angular/router';
+import { User } from '../../../models/user';
 
 @Component({
   selector: 'app-liste-categories',
@@ -11,6 +12,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./liste-categories.component.css']
 })
 export class ListeCategoriesComponent implements OnInit {
+  user: User | null = null;
   categories: Categorie[] = [];
   produitsRecents: Produit[] = [];
   loading: boolean = false;
@@ -18,12 +20,26 @@ export class ListeCategoriesComponent implements OnInit {
   constructor(
     private categorieService: CategorieService,
     private produitService: ProduitsService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadCategories();
     this.loadProduitsRecents();
+    this.user = this.authService.currentUserValue;
+  }
+
+  isAdmin(): boolean {
+    return this.user?.role === 'admin';
+  }
+
+  isEmploye(): boolean {
+    return this.user?.role === 'employee';
+  }
+
+  isClient(): boolean {
+    return this.user?.role === 'client';
   }
 
   loadCategories() {

@@ -1,32 +1,39 @@
 <div class="bg-slate-50 min-h-screen font-sans text-gray-800">
       
   <!-- Bannière -->
-  <header class="relative overflow-hidden pt-14 pb-24 rounded-b-3xl text-white
-                 bg-gradient-to-r from-violet-600 to-indigo-700 shadow-lg">
-    <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
-      <h1 class="text-3xl sm:text-4xl font-extrabold mb-2 leading-tight">
-        Gestion des produits
-      </h1>
-      <p class="text-lg opacity-90 mb-6">
-        Filtrez, recherchez et gérez votre catalogue en toute simplicité
-      </p>
-      <div class="flex flex-wrap justify-center gap-2">
-        <button
-          class="bg-white/20 text-white border border-white/30 px-5 py-2.5 font-semibold rounded-xl
-                 shadow-lg transition-all hover:bg-white/30 active:scale-95"
-          (click)="resetFiltres()"
-          aria-label="Réinitialiser les filtres">
-          <i class="fa-solid fa-undo mr-2"></i> Réinitialiser
-        </button>
-        <button
-          class="bg-white text-indigo-700 px-5 py-2.5 font-semibold rounded-xl
-                 shadow-lg transition-all hover:bg-gray-50 active:scale-95"
-          (click)="router.navigate(['/produit-form'])">
-          <i class="fa-solid fa-plus mr-2"></i> Ajouter un produit
-        </button>
-      </div>
+<header class="relative overflow-hidden pt-20 pb-32 text-white shadow-lg"
+        style="background: url('../../../../assets/premium_photo-1665669263531-cdcbe18e7fe4.jpeg') center/cover no-repeat;">
+  
+  <!-- Overlay sombre -->
+  <div class="absolute inset-0 bg-black/50"></div>
+
+  <!-- Contenu -->
+  <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
+    <h1 class="text-3xl sm:text-5xl font-extrabold mb-4 leading-tight">
+      Gestion des produits
+    </h1>
+    <p class="text-lg opacity-90 mb-6">
+      Filtrez, recherchez et gérez votre catalogue en toute simplicité
+    </p>
+    <div class="flex flex-wrap justify-center gap-2">
+      <button *ngIf="isAdmin()"
+        class="bg-white/20 text-white border border-white/30 px-5 py-2.5 font-semibold rounded-xl
+               shadow-lg transition-all hover:bg-white/30 active:scale-95"
+        (click)="resetFiltres()">
+        <i class="fa-solid fa-undo mr-2"></i> Réinitialiser
+      </button>
+      <button *ngIf="isAdmin()"
+        class="bg-white text-indigo-700 px-5 py-2.5 font-semibold rounded-xl
+               shadow-lg transition-all hover:bg-gray-50 active:scale-95"
+        (click)="router.navigate(['/produit-form'])">
+        <i class="fa-solid fa-plus mr-2"></i> Ajouter un produit
+      </button>
     </div>
-  </header>
+  </div>
+</header>
+
+
+
 
   <!-- Barre d’outils -->
   <section class="max-w-6xl mx-auto px-4 py-6 mt-6 flex flex-wrap items-center justify-between gap-4
@@ -119,22 +126,29 @@
             {{ produit.stock }} {{ produit.unite || '' }}
           </div>
         </div>
-        
         <!-- Boutons d'action -->
         <div class="flex justify-between items-center gap-2 p-3 border-t border-gray-200">
-          <div class="flex gap-2">
-            <button class="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg font-medium
+          <div class="flex flex-wrap gap-2">
+            <button *ngIf="isClient()"
+              class="bg-green-600 text-white text-sm px-4 py-2 rounded-lg font-medium
+                     transition-all hover:bg-green-700 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+              (click)="ajouterAuPanier(produit)"
+              [disabled]="produit.stock === 0"
+              aria-label="Ajouter au panier">
+              <i class="fa-solid fa-cart-plus mr-2"></i> Ajouter au panier
+            </button>
+            <button  class="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg font-medium
                            transition-all hover:bg-indigo-700 active:scale-95"
                     routerLink="/details-produit/{{ produit.id }}" aria-label="Voir détails">
               <i class="fa-solid fa-eye mr-2"></i> Détails
             </button>
-            <button class="bg-gray-100 text-gray-800 text-sm px-4 py-2 rounded-lg font-medium
+            <button *ngIf="isAdmin()" class="bg-gray-100 text-gray-800 text-sm px-4 py-2 rounded-lg font-medium
                            transition-all hover:bg-gray-200 active:scale-95"
                     (click)="modifierProduit(produit)" aria-label="Modifier">
               <i class="fa-solid fa-edit mr-2"></i> Modifier
             </button>
           </div>
-          <button class="bg-gray-100 text-gray-600 w-9 h-9 flex items-center justify-center rounded-lg
+          <button *ngIf="isAdmin()" class="bg-gray-100 text-gray-600 w-9 h-9 flex items-center justify-center rounded-lg
                          transition-all hover:text-red-600 hover:bg-red-50"
                   title="Supprimer" (click)="supprimerProduit(produit)" aria-label="Supprimer">
             <i class="fa-solid fa-trash"></i>
@@ -164,7 +178,7 @@
   </div>
 
   <!-- Section des stats -->
-  <section class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+  <section  class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
     <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
       <div class="w-12 h-12 flex items-center justify-center rounded-xl text-white
                   bg-gradient-to-br from-violet-600 to-indigo-700">
@@ -200,7 +214,7 @@
   </section>
 
   <!-- Tableau par catégories -->
-  <section class="max-w-6xl mx-auto px-4 py-6">
+  <section *ngIf="isAdmin()" class="max-w-6xl mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-bold flex items-center gap-2">
         <i class="fa-solid fa-table"></i> Produits par catégorie
@@ -256,8 +270,42 @@
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="py-8 text-center text-gray-500 text-sm">
-    Application de gestion de produits © {{ currentYear }}
-  </footer>
-</div>
+      <!-- Section À propos -->
+      <section class="relative py-20 mt-12 bg-cover bg-center"
+      style="background: url('../../../../assets/banner-1.jpeg') center/cover no-repeat;">
+    
+      <!-- Overlay sombre -->
+      <div class="absolute inset-0 bg-black/60"></div>
+    
+      <!-- Contenu -->
+      <div class="relative z-10 max-w-6xl mx-auto px-4 text-center text-white">
+        <h2 class="text-3xl font-bold mb-6">À propos de notre outil</h2>
+        <p class="max-w-3xl mx-auto text-lg opacity-90 leading-relaxed">
+          Cette application vous aide à gérer efficacement vos produits, vos stocks et vos promotions.
+          Pensée pour les boulangeries modernes, elle offre une interface intuitive, rapide et sécurisée.
+        </p>
+      </div>
+    </section>
+    
+
+      <section class="bg-gradient-to-br from-indigo-50 to-violet-50 py-16">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+          <h2 class="text-2xl font-bold mb-8">Témoignages</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <p class="text-gray-600 italic">"Un gain de temps énorme pour gérer nos produits et suivre les stocks."</p>
+              <div class="mt-4 font-semibold text-indigo-700">— Fatou, Gérante</div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <p class="text-gray-600 italic">"Interface simple et pratique, je trouve mes produits rapidement."</p>
+              <div class="mt-4 font-semibold text-indigo-700">— Moussa, Employé</div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <p class="text-gray-600 italic">"J’adore pouvoir commander en ligne et voir les promos directement."</p>
+              <div class="mt-4 font-semibold text-indigo-700">— Aïcha, Cliente</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+

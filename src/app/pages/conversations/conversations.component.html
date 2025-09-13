@@ -1,0 +1,77 @@
+<!-- src/app/pages/conversations/conversations.component.html -->
+<div class="container mx-auto p-4 space-y-8">
+
+  <!-- ---------------- Header & Recherche ---------------- -->
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+    <h2 class="text-2xl font-bold text-gray-800">💬 Conversations</h2>
+    <input type="text" placeholder="Rechercher une conversation"
+           class="border border-gray-300 rounded-lg px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900">
+  </div>
+  
+
+  <!-- ---------------- Liste des conversations ---------------- -->
+  <div *ngIf="!loading; else loadingTpl" class="space-y-2">
+    <div *ngIf="items.length; else emptyTpl" class="space-y-2">
+      <div *ngFor="let it of items" (click)="open(it)"
+           class="flex items-center gap-4 p-4 bg-white rounded-lg shadow hover:shadow-lg cursor-pointer transition">
+        <div class="flex-none w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-900 text-xl">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        <div class="flex-1">
+          <div class="font-semibold text-gray-800">{{ it.title }}</div>
+          <div class="text-gray-500 text-sm mt-1">{{ it.subtitle }}</div>
+        </div>
+        <div class="flex-none text-gray-400">
+          <i class="bi bi-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ---------------- Empty ---------------- -->
+  <ng-template #emptyTpl>
+    <div class="text-center text-gray-500 py-10">Aucune conversation pour l’instant.</div>
+  </ng-template>
+  
+  <!-- ---------------- Loading ---------------- -->
+  <ng-template #loadingTpl>
+    <div class="text-center text-gray-500 py-10">⏳ Chargement des conversations…</div>
+  </ng-template>
+
+
+
+  <!-- ---------------- Suggestions / Contacts récents ---------------- -->
+  <section class="mt-8">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">Contacts récents</h3>
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div *ngFor="let it of items" class="flex flex-col items-center bg-white rounded-lg shadow p-3 hover:shadow-lg cursor-pointer transition">
+        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-900 text-xl mb-2">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        <div class="text-gray-800 text-sm text-center truncate w-full">{{ it.title }}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- Informations / CTA ---------------- -->
+  <section class="mt-8 bg-blue-900 text-white rounded-lg p-6 flex flex-col lg:flex-row items-center gap-6">
+    <div class="flex-1 space-y-2">
+      <h2 class="text-xl font-bold">Besoin d’aide ou d’un conseil ?</h2>
+      <p class="text-gray-100">Notre support client est disponible pour répondre à toutes vos questions concernant vos commandes ou conversations.</p>
+    </div>
+    <div class="flex-1 text-center lg:text-right">
+      <button class="bg-orange-500 px-4 py-2 rounded hover:bg-white hover:text-blue-900 transition-colors" routerLink="/chat">Contacter le support</button>
+    </div>
+  </section>
+
+  <!-- ---------------- FAQ rapide ---------------- -->
+  <section class="mt-8 bg-gray-50 rounded-lg p-6 shadow">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">FAQ rapide</h3>
+    <ul class="list-disc list-inside text-gray-600 space-y-2 text-sm">
+      <li>Comment démarrer une nouvelle conversation ?</li>
+      <li>Comment joindre un agent en direct ?</li>
+      <li>Comment archiver une conversation terminée ?</li>
+    </ul>
+  </section>
+
+</div>

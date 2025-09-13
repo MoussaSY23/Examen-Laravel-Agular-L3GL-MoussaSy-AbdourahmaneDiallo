@@ -1,14 +1,20 @@
 import { User } from "./user";
 import { Produit } from "../services/produit/test/produits.service";
 
+export type StatutCommande = 'en_preparation' | 'en_livraison' | 'livree' | 'annulee';
+export type ModePaiement = 'en_ligne' | 'a_la_livraison';
+
 export interface Commande {
   id: number;
   user_id: number;               // le client qui a passé la commande
   employe_id?: number | null;    // optionnel si assignation à un employé
-  statut: 'en_preparation' | 'en_livraison' | 'livree' | 'annulee';
-  mode_paiement: 'en_ligne' | 'a_la_livraison';
+  statut: StatutCommande;
+  mode_paiement: ModePaiement;
   total: number;
-  date_commande: string;          // ISO date
+  frais_livraison?: number;      // frais de livraison
+  date_commande: string;         // ISO date
+  updated_at?: string;           // date de dernière mise à jour
+  created_at?: string;           // date de création
   date_livraison_estimee?: string | null;
   adresse_livraison: string;
   notes?: string | null;

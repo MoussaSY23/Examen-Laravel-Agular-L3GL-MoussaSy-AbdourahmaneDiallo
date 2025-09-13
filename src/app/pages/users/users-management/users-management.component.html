@@ -1,0 +1,119 @@
+<div class="um-wrapper" *ngIf="!isLoading; else loadingTpl">
+  <!-- Header -->
+  <header class="um-header">
+    <div>
+      <h2>Gestion des utilisateurs</h2>
+      <p class="subtitle">Admin uniquement • Filtrer par rôle, changer les rôles, supprimer des comptes</p>
+    </div>
+    <div class="actions">
+      <input #q type="text" placeholder="Rechercher (nom, email)" [value]="query" (input)="onSearch(q.value)" />
+      <button class="refresh" (click)="load()" title="Actualiser"><i class="fas fa-sync"></i></button>
+    </div>
+  </header>
+
+  <!-- Role Tabs -->
+  <nav class="tabs">
+    <button [class.active]="activeRole==='all'" (click)="setRoleFilter('all')">Tous</button>
+    <button [class.active]="activeRole==='admin'" (click)="setRoleFilter('admin')">Admins</button>
+    <button [class.active]="activeRole==='employee'" (click)="setRoleFilter('employee')">Employés</button>
+    <button [class.active]="activeRole==='client'" (click)="setRoleFilter('client')">Clients</button>
+  </nav>
+
+  <!-- Stats -->
+  <section class="um-stats">
+    <div class="card">
+      <div class="label">Total</div>
+      <div class="value">{{ totalCount }}</div>
+    </div>
+    <div class="card admin">
+      <div class="label">Admins</div>
+      <div class="value">{{ adminCount }}</div>
+    </div>
+    <div class="card employee">
+      <div class="label">Employés</div>
+      <div class="value">{{ employeeCount }}</div>
+    </div>
+    <div class="card client">
+      <div class="label">Clients</div>
+      <div class="value">{{ clientCount }}</div>
+    </div>
+  </section>
+
+  <!-- Table -->
+  <section class="table">
+    <div class="thead">
+      <div>Utilisateur</div>
+      <div>Contact</div>
+      <div>Rôle</div>
+      <div>Créé le</div>
+      <div class="right">Actions</div>
+    </div>
+    <div class="tbody" *ngIf="filtered.length; else emptyTpl">
+      <div class="trow" *ngFor="let u of filtered">
+        <div class="user">
+          <div class="avatar">
+            <img *ngIf="u.avatar" class="avatar-img" [src]="u.avatar" alt="avatar" (error)="$any($event.target).style.display='none'" />
+            <span *ngIf="!u.avatar" class="avatar-fallback">{{ (u.name && u.name[0]) ? u.name[0].toUpperCase() : '?' }}</span>
+          </div>
+          <div class="meta">
+            <div class="name">{{ u.name }}</div>
+            <div class="id">#{{ u.id }}</div>
+          </div>
+        </div>
+        <div class="contact">
+          <div class="email">{{ u.email }}</div>
+          <div class="extras" *ngIf="u.telephone || u.ville || u.adresse">
+            <span *ngIf="u.telephone"><i class="fas fa-phone"></i> {{ u.telephone }}</span>
+            <span *ngIf="u.ville"><i class="fas fa-city"></i> {{ u.ville }}</span>
+            <span *ngIf="u.adresse"><i class="fas fa-map-marker-alt"></i> {{ u.adresse }}</span>
+          </div>
+        </div>
+        <div class="role">
+          <div class="role-select">
+            <select #roleSel [value]="u.role" (change)="promptChangeRole(u, $any(roleSel.value)); roleSel.value = u.role" [disabled]="isRoleUpdating(u)">
+              <option *ngFor="let r of roles" [value]="r.key">{{ r.label }}</option>
+            </select>
+            <div *ngIf="isRoleUpdating(u)" class="mini-spinner" title="Mise à jour..."></div>
+          </div>
+        </div>
+        <div>{{ u.created_at | date: 'dd/MM/yyyy HH:mm' }}</div>
+        <div class="right">
+          <button class="danger danger-lg" (click)="promptDelete(u)" title="Supprimer"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Confirmation Modal -->
+  <div class="um-modal-backdrop" *ngIf="pendingAction"></div>
+  <div class="um-modal" *ngIf="pendingAction">
+    <div class="modal-header">
+      <h3 *ngIf="pendingAction?.type==='delete'"><i class="fas fa-exclamation-triangle"></i> Confirmer la suppression</h3>
+      <h3 *ngIf="pendingAction?.type==='role'"><i class="fas fa-user-shield"></i> Confirmer le changement de rôle</h3>
+    </div>
+    <div class="modal-body" *ngIf="pendingAction as a">
+      <p *ngIf="a.type==='delete'">Êtes-vous sûr de vouloir supprimer l'utilisateur <strong>{{ a.user.name }}</strong> ? Cette action est irréversible.</p>
+      <p *ngIf="a.type==='role'">Changer le rôle de <strong>{{ a.user.name }}</strong> pour <strong>{{ getRoleLabel(a.newRole!) }}</strong> ?</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="cancelPending()">Annuler</button>
+      <button class="btn btn-primary" (click)="confirmPending()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<ng-template #loadingTpl>
+  <div class="um-loading">
+    <div class="spinner"></div>
+    <p>Chargement des utilisateurs…</p>
+  </div>
+</ng-template>
+
+<!-- Empty -->
+<ng-template #emptyTpl>
+  <div class="um-empty">
+    <i class="fas fa-users"></i>
+    <p>Aucun utilisateur trouvé avec ces filtres.</p>
+  </div>
+</ng-template>

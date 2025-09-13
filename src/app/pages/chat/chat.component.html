@@ -1,0 +1,28 @@
+<div class="chat-wrapper" *ngIf="!loading; else loadingTpl">
+  <header class="chat-header">
+    <h3>Messagerie</h3>
+    <div class="participants">
+      <span class="badge">Client #{{ clientId }}</span>
+      <span class="sep">↔</span>
+      <span class="badge blue">Support</span>
+    </div>
+  </header>
+
+  <section class="chat-body" id="chatBody">
+    <div *ngFor="let m of messages; trackBy: trackByMsg" class="msg" [ngClass]="{ mine: isMine(m) }">
+      <div class="bubble">
+        <div class="content">{{ m.contenu }}</div>
+        <div class="meta">{{ m.created_at | date:'dd/MM HH:mm' }}</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="chat-footer">
+    <input type="text" placeholder="Votre message..." [(ngModel)]="newMessage" (keyup.enter)="send()" />
+    <button class="send" (click)="send()">Envoyer</button>
+  </footer>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="chat-loading">Chargement de la conversation…</div>
+</ng-template>

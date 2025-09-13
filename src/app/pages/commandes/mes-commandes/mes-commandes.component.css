@@ -1,0 +1,103 @@
+.mc-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f9fb;
+    color: #182848;
+  }
+  
+  /* ---------------- Header ---------------- */
+  .mc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .mc-header h2 { font-size: 24px; margin: 0; }
+  .mc-refresh {
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+  }
+  .mc-refresh .spin { animation: spin 1s linear infinite; }
+  @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg);} }
+  
+  /* ---------------- Statistiques ---------------- */
+  .mc-stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    flex: 1 1 30%;
+    background: #e6f0ff;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 120px;
+    transition: transform 0.3s ease;
+  }
+  .stat-card:hover { transform: translateY(-3px); }
+  .stat-card h3 { font-size: 1.5rem; color: #1d4ed8; margin-bottom: 4px; }
+  .stat-card p { font-size: 0.9rem; color: #182848; }
+  
+  /* ---------------- Liste des commandes ---------------- */
+  .mc-list { display: grid; gap: 12px; }
+  .mc-card {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 12px;
+    background: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .mc-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+  .mc-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .mc-row.light { color: #666; font-size: 13px; }
+  .mc-id { font-weight: 700; }
+  .mc-total { font-weight: 700; }
+  .mc-status { padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+  .mc-status.en_livraison { background: #e6f0ff; color: #1d4ed8; }
+  .mc-status.en_preparation { background: #fff7e6; color: #b45309; }
+  .mc-status.livree { background: #e6ffed; color: #059669; }
+  .mc-status.annulee { background: #ffe6e6; color: #dc2626; }
+  .mc-emp { display: flex; gap: 6px; align-items: center; color: #333; }
+  .mc-actions { display: flex; gap: 8px; }
+  .btn { border: 1px solid #ddd; border-radius: 8px; padding: 6px 10px; background: #fff; color: #333; text-decoration: none; cursor: pointer; }
+  .btn.primary { background: #2563eb; color: #fff; border-color: #2563eb; }
+  .btn-primary { background: #2563eb; color: #fff; border: none; }
+  .btn-primary:hover { background: #1d4ed8; }
+  .btn-secondary { background: #fff; color: #2563eb; border: 2px solid #2563eb; }
+  .btn-secondary:hover { background: #2563eb; color: #fff; }
+  
+  /* ---------------- Loading / Empty ---------------- */
+  .mc-loading, .mc-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #666; padding: 24px; }
+  .mc-empty i { font-size: 28px; color: #aaa; }
+  .mc-empty-img { max-width: 200px; margin-bottom: 12px; }
+  
+  /* ---------------- Section Aide / Support ---------------- */
+  .mc-help { background: #fff7e6; padding: 40px 20px; margin-top: 40px; border-radius: 12px; }
+  .mc-help-content { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
+  .mc-help-text { flex: 1 1 300px; }
+  .mc-help-text h3 { font-size: 1.5rem; margin-bottom: 12px; color: #b45309; }
+  .mc-help-text p { margin-bottom: 16px; color: #92400e; }
+  .mc-help-text button { background: #b45309; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+  .mc-help-text button:hover { background: #78350f; }
+  .mc-help-image { flex: 1 1 200px; text-align: center; }
+  .mc-help-image img { max-width: 100%; border-radius: 12px; }
+  
+  /* ---------------- Footer / Actions rapides ---------------- */
+  .mc-footer-actions { display: flex; justify-content: center; gap: 16px; margin: 40px 0; flex-wrap: wrap; }
+  
+  /* ---------------- Responsive ---------------- */
+  @media (max-width: 768px) {
+    .mc-stats { flex-direction: column; gap: 12px; }
+    .mc-help-content { flex-direction: column; text-align: center; }
+    .mc-help-text { flex: unset; }
+    .mc-help-image { flex: unset; }
+  }
+  

@@ -17,11 +17,14 @@ export class MonProfilComponent implements OnInit {
   errorMessage = '';
   selectedFile: File | null = null;
   editMode = false; // 🔹 contrôle l'affichage du formulaire
+  previewUrl: string | null = null; // aperçu de l'avatar
 
   constructor(private authService: AuthService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.user = this.authService.getCurrentUser(); // infos immédiates
+    // Garder l'en-tête synchronisé avec l'état global utilisateur
+    this.authService.currentUser.subscribe(u => { if (u) this.user = u; });
 
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
@@ -45,14 +48,18 @@ export class MonProfilComponent implements OnInit {
       .subscribe({
         next: (user) => {
           if (!user) return;
+          // Normaliser la réponse éventuelle { user: {...} } ou avec clés différentes
+          const normalized = this.normalizeUserResponse(user as any);
+          this.user = normalized; // source de vérité locale
           this.profileForm.patchValue({
-            name: user.name,
-            email: user.email,
-            telephone: user.telephone,
-            adresse: user.adresse,
-            ville: user.ville,
-            avatar: user.avatar
+            name: normalized.name || '',
+            email: normalized.email || '',
+            telephone: normalized.telephone || '',
+            adresse: normalized.adresse || '',
+            ville: normalized.ville || '',
+            avatar: normalized.avatar || ''
           });
+          this.previewUrl = null; // reset l'aperçu si on recharge
         },
         error: (err) => {
           console.error(err);
@@ -74,7 +81,9 @@ export class MonProfilComponent implements OnInit {
       this.selectedFile = file;
       const reader = new FileReader();
       reader.onload = () => {
-        this.profileForm.patchValue({ avatar: reader.result as string });
+        const dataUrl = reader.result as string;
+        this.profileForm.patchValue({ avatar: dataUrl });
+        this.previewUrl = dataUrl;
       };
       reader.readAsDataURL(file);
     }
@@ -101,11 +110,14 @@ export class MonProfilComponent implements OnInit {
       .subscribe({
         next: (user) => {
           if (user) {
-            this.user = user;
+            const normalized = this.normalizeUserResponse(user as any);
+            this.user = normalized;
             this.authService.storeUserData(user); // met à jour le BehaviorSubject
             this.successMessage = 'Profil mis à jour avec succès !';
             this.errorMessage = '';
             this.editMode = false; // formulaire disparaît
+            this.selectedFile = null;
+            this.previewUrl = null;
           }
         },
         error: (err) => {
@@ -116,6 +128,60 @@ export class MonProfilComponent implements OnInit {
   }
 
   getAvatarUrl(): string {
-    return this.user?.avatar ? `http://localhost:8000/storage/${this.user.avatar}` : '../../../assets/images.jpeg';
+    // Priorité à l'aperçu local si disponible
+    if (this.previewUrl) return this.previewUrl;
+    const formAvatar = this.profileForm?.value?.avatar;
+    if (typeof formAvatar === 'string' && formAvatar.startsWith('data:')) return formAvatar;
+    const u = this.user?.avatar;
+    if (typeof u === 'string' && /^(https?:\/\/|data:)/i.test(u)) return u;
+    return u ? `http://localhost:8000/storage/${u}` : '../../../assets/dfault-avatar.png';
+  }
+
+  cancelEdit(): void {
+    this.editMode = false;
+    this.selectedFile = null;
+    this.previewUrl = null;
+    this.successMessage = '';
+    this.errorMessage = '';
+    // recharger les infos depuis l'API ou remettre les valeurs actuelles utilisateur
+    if (this.user) {
+      this.profileForm.patchValue({
+        name: this.user.name,
+        email: this.user.email,
+        telephone: this.user.telephone,
+        adresse: this.user.adresse,
+        ville: this.user.ville,
+        avatar: this.user.avatar
+      });
+    }
+  }
+
+  // Normalise différentes formes de réponses backend vers notre interface User
+  private normalizeUserResponse(payload: any): User {
+    const raw = payload?.user ? payload.user : payload;
+    const telephone = raw?.telephone ?? raw?.phone ?? raw?.tel ?? '';
+    const adresse = raw?.adresse ?? raw?.address ?? '';
+    const ville = raw?.ville ?? raw?.city ?? '';
+    // avatar peut être une URL complète, une path storage, ou null
+    let avatar: string | undefined = raw?.avatar ?? raw?.photo ?? raw?.image;
+    if (avatar && typeof avatar === 'string') {
+      // Si c'est déjà une data URL ou une URL http/https, garder tel quel
+      if (/^(data:|https?:\/\/)/i.test(avatar)) {
+        // ok
+      } else {
+        // sinon, construire l'URL storage présumée
+        avatar = `http://localhost:8000/storage/${avatar}`;
+      }
+    }
+    return {
+      id: raw?.id,
+      name: raw?.name ?? '',
+      email: raw?.email ?? '',
+      role: raw?.role ?? 'client',
+      telephone,
+      adresse,
+      ville,
+      avatar
+    } as User;
   }
 }

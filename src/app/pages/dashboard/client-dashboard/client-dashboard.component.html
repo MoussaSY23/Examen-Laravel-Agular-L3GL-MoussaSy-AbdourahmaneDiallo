@@ -1,0 +1,109 @@
+<div class="font-sans text-gray-900">
+
+  <!-- HERO / Bannière principale -->
+  <section class="relative min-h-[50vh] flex items-center justify-center text-center bg-cover bg-center overflow-hidden"
+           style="background-image: url('../../../../assets/genereux.jpg');">
+    <div class="absolute inset-0 bg-blue-900/70"></div>
+    <div class="relative px-6 max-w-3xl text-white animate-fadeInDown">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">Bienvenue dans notre boulangerie</h1>
+      <p class="text-lg md:text-xl mb-6">Découvrez nos produits frais et artisanaux.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <button class="bg-blue-700 hover:bg-blue-800 px-6 py-2 rounded-lg font-semibold transition-transform hover:scale-105"
+                (click)="goProduits()">Commander</button>
+        <button class="bg-white text-blue-700 hover:bg-gray-100 px-6 py-2 rounded-lg font-semibold transition-transform hover:scale-105"
+                (click)="goCategories()">Catégories</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="py-12 bg-blue-50">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-blue-900">Nos catégories</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto px-4">
+      <div *ngFor="let c of categories" class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition transform hover:scale-105 animate-fadeInUp">
+        <div class="text-xl font-bold text-blue-900">{{ c.nom }}</div>
+        <div class="text-gray-600 mt-2">{{ c.description || 'Découvrez nos délicieux produits de cette catégorie.' }}</div>
+        <button class="mt-4 bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition transform hover:scale-105"
+                (click)="goProduits()">Voir produits</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUITS RÉCENTS (carousel) -->
+  <section class="py-12 bg-white">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-blue-900">Produits récents</h2>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-12 text-gray-500">Chargement…</div>
+
+    <div *ngIf="!isLoading" class="overflow-x-auto relative">
+      <div class="flex gap-6 px-4 animate-slide">
+        <div *ngFor="let p of produitsRecents | slice:0:12" class="w-64 flex-shrink-0 bg-white rounded-xl shadow-lg hover:shadow-2xl transform transition hover:scale-105 flex flex-col animate-fadeInUp">
+          <div class="h-44 bg-cover bg-center rounded-t-xl" [style.backgroundImage]="'url(' + getImageUrl(p) + ')'"></div>
+          <div class="p-4 flex flex-col gap-2 flex-1">
+            <div class="font-bold text-gray-900">{{ p.nom }}</div>
+            <div class="text-green-600 font-semibold">{{ p.prix | currency:'XOF' }}</div>
+            <button class="mt-auto bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition transform hover:scale-105"
+                    (click)="goProduits()">Voir tous les produits</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTIQUES -->
+  <section class="py-12 bg-blue-50">
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+      <div class="bg-white rounded-2xl shadow-lg p-6 animate-fadeInUp">
+        <div class="text-2xl font-bold text-blue-700">{{ produitsRecents.length }}</div>
+        <div class="text-gray-600">Produits récents</div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-6 animate-fadeInUp">
+        <div class="text-2xl font-bold text-green-600">{{ categories.length }}</div>
+        <div class="text-gray-600">Catégories</div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-6 animate-fadeInUp">
+        <div class="text-2xl font-bold text-orange-600">À définir</div>
+        <div class="text-gray-600">Clients / Promotions</div>
+      </div>
+    </div>
+  </section>
+
+    <!-- À propos -->
+    <section class="relative py-20 mt-12 bg-cover bg-center" style="background-image: url('../../../../assets/banner-1.jpeg');">
+      <div class="absolute inset-0 bg-black/60"></div>
+      <div class="relative z-10 max-w-6xl mx-auto px-4 text-center text-white animate-fadeInUp">
+        <h2 class="text-3xl font-bold mb-6">À propos de notre outil</h2>
+        <p class="max-w-3xl mx-auto text-lg leading-relaxed">
+          Cette application vous aide à gérer efficacement vos produits et vos stocks, pensée pour les boulangeries modernes.
+        </p>
+      </div>
+    </section>
+
+  <!-- TÉMOIGNAGES -->
+  <section class="py-12 bg-gray-50">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-blue-900">Témoignages</h2>
+    </div>
+    <div class="flex flex-wrap justify-center gap-6 px-4">
+      <div class="bg-white rounded-2xl shadow-lg p-6 w-80 animate-fadeInUp">
+        <p class="text-gray-600 italic">"Un gain de temps énorme pour gérer nos produits et suivre les stocks."</p>
+        <div class="mt-4 font-semibold text-blue-700">— Fatou, Gérante</div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-6 w-80 animate-fadeInUp">
+        <p class="text-gray-600 italic">"Interface simple et pratique, je trouve mes produits rapidement."</p>
+        <div class="mt-4 font-semibold text-blue-700">— Moussa, Employé</div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-6 w-80 animate-fadeInUp">
+        <p class="text-gray-600 italic">"J’adore pouvoir commander en ligne et voir les promos directement."</p>
+        <div class="mt-4 font-semibold text-blue-700">— Aïcha, Cliente</div>
+      </div>
+    </div>
+  </section>
+
+
+
+</div>

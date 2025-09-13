@@ -1,0 +1,12 @@
+.conv-wrapper{max-width:900px;margin:20px auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.05)}
+.conv-header{padding:12px 16px;border-bottom:1px solid #eee;background:#f9fafb}
+.conv-header h3{margin:0;font-weight:700;color:#111827}
+.conv-list{display:flex;flex-direction:column}
+.conv-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f1f5f9;cursor:pointer}
+.conv-item:hover{background:#f8fafc}
+.avatar i{font-size:28px;color:#64748b}
+.meta{flex:1}
+.title{font-weight:700;color:#111827}
+.subtitle{font-size:12px;color:#6b7280;margin-top:2px}
+.chev i{color:#94a3b8}
+.conv-empty,.conv-loading{padding:28px;text-align:center;color:#6b7280}

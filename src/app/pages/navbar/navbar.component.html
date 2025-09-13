@@ -12,24 +12,39 @@
       <!-- Admin -->
       <li *ngIf="isAdmin()"><a routerLink="/admin-dashboard">Dashboard</a></li>
       <li *ngIf="isAdmin()"><a routerLink="/produits">Produits</a></li>
-      <li *ngIf="isAdmin()"><a routerLink="/utilisateurs">Utilisateurs</a></li>
+      <li *ngIf="isAdmin()"><a routerLink="/admin/users">Utilisateurs</a></li>
       <li *ngIf="isAdmin()"><a routerLink="/categories">Catégories</a></li>
       <li *ngIf="isAdmin()"><a routerLink="/commandes">Commandes</a></li>
 
       <!-- Employé -->
-      <li *ngIf="isEmploye()"><a routerLink="/dashboard">Dashboard</a></li>
+      <li *ngIf="isEmploye()"><a routerLink="/admin-dashboard">Dashboard</a></li>
       <li *ngIf="isEmploye()"><a routerLink="/produits">Produits</a></li>
-      <li *ngIf="isEmploye()"><a routerLink="/utilisateurs">Utilisateurs</a></li>
       <li *ngIf="isEmploye()"><a routerLink="/categories">Catégories</a></li>
       <li *ngIf="isEmploye()"><a routerLink="/commandes">Commandes</a></li>
-      <li *ngIf="isEmploye()"><a routerLink="/conversations">Conversations</a></li>
+      <li *ngIf="isEmploye()">
+        <a routerLink="/conversations" class="icon-link" title="Messagerie">
+          <i class="bi bi-chat-dots"></i>
+          <span class="badge" *ngIf="unreadCount > 0">!</span>
+        </a>
+      </li>
 
       <!-- Client -->
-      <li *ngIf="isClient()"><a routerLink="/admin-dashboard">Accueil</a></li>
+      <li *ngIf="isClient()"><a routerLink="/client-dashboard">Accueil</a></li>
       <li *ngIf="isClient()"><a routerLink="/produits">Produits</a></li>
       <li *ngIf="isClient()"><a routerLink="/categories">Catégories</a></li>
-      <li *ngIf="isClient()"><a routerLink="/panier">Panier</a></li>
-      <li *ngIf="isClient()"><a routerLink="/conversations">Conversations</a></li>
+      <li *ngIf="isClient()"><a routerLink="/mes-commandes">Mes commandes</a></li>
+      <li *ngIf="isClient()">
+        <a routerLink="/panier" class="icon-link" title="Mon panier">
+          <i class="bi bi-cart3"></i>
+          <span class="badge" *ngIf="cartCount > 0">!</span>
+        </a>
+      </li>
+      <li *ngIf="isClient()">
+        <a routerLink="/conversations" class="icon-link" title="Messagerie">
+          <i class="bi bi-chat-dots"></i>
+          <span class="badge" *ngIf="unreadCount > 0">!</span>
+        </a>
+      </li>
     </ul>
 
     <ng-template #loadingMenu>
@@ -48,6 +63,8 @@
       <!-- Dropdown -->
       <div class="dropdown">
         <a routerLink="/mon-profil">Profil</a>
+        <a *ngIf="isAdmin() || isEmploye()" [routerLink]="['/commandes']" [queryParams]="{ statut: 'livree' }">Historique commandes livrées</a>
+        <a *ngIf="isClient()" [routerLink]="['/mes-commandes']" [queryParams]="{ statut: 'livree' }">Mes commandes livrées</a>
         <a (click)="logout()">Déconnexion</a>
       </div>
     </div>

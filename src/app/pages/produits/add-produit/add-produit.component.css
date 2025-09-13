@@ -1,0 +1,13 @@
+/* add-produit.component.css */
+
+/* Si tu utilises Tailwind, ce fichier peut rester quasi vide.
+   On ajoute 2 petites animations optionnelles pour les aperçus. */
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+:host .rounded-xl { /* ensure smooth corners */
+  border-radius: 0.75rem;
+}

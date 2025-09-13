@@ -8,7 +8,7 @@
 
 /* ---------------- Banniere ---------------- */
 .categories-banner {
-  background: linear-gradient(135deg, #182848, #4b6cb7);
+  background: url('../../../../assets/M6-UJUD-BOULANGERIE-LOW-COST-CAPTURE-3.jpg');
   color: #fff;
   text-align: center;
   padding: 80px 20px;
@@ -41,6 +41,176 @@
   background-color: #4b6cb7;
   color: #fff;
 }
+
+/* ---------------- Catégories Populaires ---------------- */
+.popular-categories {
+  background: linear-gradient(135deg, #f4f6f8, #e9ecf3);
+  padding: 80px 20px;
+}
+
+.popular-categories h2 {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 50px;
+  color: #182848;
+}
+
+.popular-categories .categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+.popular-categories .category-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  padding: 25px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.popular-categories .category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.popular-categories h3 {
+  color: #4b6cb7;
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+/* ---------------- Témoignages ---------------- */
+.categories-testimonials {
+  background: url('../../../../assets/premium_photo-1665669263531-cdcbe18e7fe4.jpeg') center/cover no-repeat;
+  padding: 90px 20px;
+  position: relative;
+  color: #fff;
+}
+
+.categories-testimonials::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(24, 40, 72, 0.7);
+}
+
+.categories-testimonials .container {
+  position: relative;
+  z-index: 1;
+}
+
+.categories-testimonials h2 {
+  text-align: center;
+  font-size: 2.3rem;
+  margin-bottom: 40px;
+  color: #fff;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.testimonial {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.testimonial p {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  font-style: italic;
+}
+
+.testimonial span {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #f9d371;
+}
+
+/* ---------------- FAQ ---------------- */
+.categories-faq {
+  background: #fff;
+  padding: 80px 20px;
+}
+
+.categories-faq h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 40px;
+  color: #182848;
+}
+
+.faq-list {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  background: #f8faff;
+  border-left: 5px solid #4b6cb7;
+  padding: 20px 25px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  transition: background 0.3s ease;
+}
+
+.faq-item:hover {
+  background: #eef2fa;
+}
+
+.faq-item h4 {
+  font-size: 1.2rem;
+  color: #182848;
+  margin-bottom: 8px;
+}
+
+.faq-item p {
+  color: #444;
+  font-size: 1rem;
+}
+
+/* ---------------- CTA Final ---------------- */
+.final-cta {
+  background: linear-gradient(135deg, #4b6cb7, #182848);
+  color: #fff;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.final-cta h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.final-cta p {
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+  opacity: 0.9;
+}
+
+.final-cta .btn-primary {
+  background: #fff;
+  color: #182848;
+  padding: 14px 30px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.final-cta .btn-primary:hover {
+  background: #f9d371;
+  color: #182848;
+}
+
 
 /* ---------------- Sections ---------------- */
 section {
@@ -258,30 +428,52 @@ section {
 }
 
 /* ---------------- Infos supplémentaires ---------------- */
-.categories-info h2 {
-  text-align: center;
+/* Layout 2 colonnes pour la section info */
+.categories-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  padding: 80px 20px;
+}
+
+.categories-info-text h2 {
   font-size: 2rem;
   margin-bottom: 20px;
   color: #182848;
 }
 
-.categories-info p {
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto 20px;
+.categories-info-text p {
   font-size: 1rem;
-  line-height: 1.6;
+  margin-bottom: 15px;
   color: #444;
 }
 
-.categories-info ul {
+.categories-info-text ul {
   list-style: disc;
-  max-width: 600px;
-  margin: 0 auto;
   padding-left: 20px;
   color: #555;
   font-size: 1rem;
 }
+
+.categories-info-image img {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+  max-height: 400px;
+}
+
+/* Responsive pour écrans plus petits */
+@media (max-width: 768px) {
+  .categories-info-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .categories-info-image img {
+    max-height: 300px;
+  }
+}
+
 
 /* ---------------- Quick actions / CTA ---------------- */
 .quick-actions {

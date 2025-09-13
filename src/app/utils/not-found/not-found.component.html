@@ -1,0 +1,31 @@
+<div class="bg-gray-500 min-h-screen flex items-center justify-center p-4">
+    <div class="relative">
+      <!-- Diamond shape container -->
+      <div class="diamond-shape w-80 h-80 bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-3d border-4 border-black rounded-2xl">
+        <!-- Content inside diamond -->
+        <div class="diamond-content w-full h-full flex flex-col items-center justify-center text-black font-bold">
+          <!-- 404 Text -->
+          <div class="text-8xl font-black mb-2 leading-none tracking-tight">
+            404
+          </div>
+          <!-- ERROR Text -->
+          <div class="text-3xl font-black mb-1 tracking-wider">
+            ERROR
+          </div>
+          <!-- PAGE NOT FOUND Text -->
+          <div class="text-lg font-bold tracking-wide">
+            PAGE NOT FOUND
+          </div>
+        </div>
+      </div>
+      
+      <!-- Navigation button -->
+      <div class="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center">
+        <button 
+          routerLink="/produits"
+          class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-6 rounded-lg border-2 border-black shadow-lg transition-all duration-200 hover:shadow-xl transform hover:-translate-y-1">
+          Retour à l'accueil
+        </button>
+      </div>
+    </div>
+  </div>

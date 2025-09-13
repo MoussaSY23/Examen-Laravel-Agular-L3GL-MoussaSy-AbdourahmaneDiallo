@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProduitsService, Produit } from '../../../services/produit/test/produits.service';
+import { CommandeService } from '../../../services/commande/commande.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-detail-produit',
@@ -18,7 +20,9 @@ export class DetailProduitComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private produitService: ProduitsService
+    private produitService: ProduitsService,
+    private commandeService: CommandeService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -68,11 +72,55 @@ export class DetailProduitComponent implements OnInit {
   }
 
   addToCart() {
-    console.log('Ajouter au panier:', this.produit, this.quantity);
+    if (!this.produit?.id) return;
+    if (this.isOutOfStock(this.produit.stock)) {
+      this.toastr.error("Produit en rupture de stock", "Impossible d'ajouter");
+      return;
+    }
+    const qty = Math.max(1, Math.min(this.quantity, this.produit.stock));
+    this.commandeService.addProduitAuPanier(this.produit.id, qty).subscribe({
+      next: () => {
+        const image = this.mainImage || 'assets/images/no-image.jpg';
+        this.toastr.success(
+          `<div class="toast-cart">
+            <img src="${image}" alt="${this.produit?.nom || ''}"/>
+            <div class="info">
+              <div class="title">Ajouté au panier</div>
+              <div class="name">${this.produit?.nom}</div>
+            </div>
+          </div>`,
+          '',
+          { enableHtml: true, closeButton: true, progressBar: true, timeOut: 2500, positionClass: 'toast-top-right' }
+        );
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error("Impossible d'ajouter le produit au panier");
+      }
+    });
   }
 
   buyNow() {
-    console.log('Acheter maintenant:', this.produit, this.quantity);
+    if (!this.produit?.id) return;
+    const qty = Math.max(1, Math.min(this.quantity, this.produit.stock || 1));
+    this.commandeService.addProduitAuPanier(this.produit.id, qty).subscribe({
+      next: () => {
+        const image = this.mainImage || 'assets/images/no-image.jpg';
+        this.toastr.success(
+          `<div class=\"toast-cart\">
+            <img src=\"${image}\" alt=\"${this.produit?.nom || ''}\"/>
+            <div class=\"info\">
+              <div class=\"title\">Ajouté au panier</div>
+              <div class=\"name\">${this.produit?.nom}</div>
+            </div>
+          </div>`,
+          '',
+          { enableHtml: true, closeButton: true, progressBar: true, timeOut: 1500, positionClass: 'toast-top-right' }
+        );
+        this.router.navigate(['/commande/panier']);
+      },
+      error: () => this.router.navigate(['/commande/panier'])
+    });
   }
 
   setActiveTab(tab: 'description' | 'specifications' | 'reviews') {
