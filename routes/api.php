@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ProduitController;
 use App\Http\Controllers\Api\CategorieController;
 use App\Http\Controllers\Api\UserManagementController;
+use App\Http\Controllers\Api\SupportController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -106,5 +107,16 @@ Broadcast::channel('chat', function ($user) {
     return $user != null;
 });
 
+
+// ==========================
+// Support (IA) - endpoints
+// ==========================
+// NB: Pour une première version, on laisse ces routes publiques. Pour un environnement prod,
+// il est recommandé d'ajouter une forme d'authentification ou un jeton anonyme par conversation.
+Route::prefix('support')->group(function () {
+    Route::post('/conversations', [SupportController::class, 'create']);
+    Route::get('/conversations/{conversation}', [SupportController::class, 'show']);
+    Route::post('/messages', [SupportController::class, 'sendMessage']);
+});
 
 
