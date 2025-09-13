@@ -1,23 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommandeService } from '../../services/commande/commande.service';
 import { Commande } from '../../models/commande';
+import { ThreadService } from '../../services/thread/thread.service';
+import { MessageItem } from '../../services/message/message.service';
+import { Subscription } from 'rxjs';
+import { RealtimeService } from '../../services/realtime/realtime.service';
 
 @Component({
   selector: 'app-conversations',
   templateUrl: './conversations.component.html',
   styleUrls: ['./conversations.component.css']
 })
-export class ConversationsComponent implements OnInit {
+export class ConversationsComponent implements OnInit, OnDestroy {
+  @ViewChild('chatBody') chatBody?: ElementRef<HTMLDivElement>;
   loading = false;
   items: Array<{ id: number; title: string; subtitle: string; clientId: number; employeId: number }>=[];
   me: any;
+  meId!: number;
+  // Chat pane state
+  selectedCommandeId?: number;
+  messages: MessageItem[] = [];
+  newMessage = '';
+  loadingMessages = false;
+  sub?: Subscription; // subscription to realtime messages
 
   constructor(
     private router: Router,
     private toastr: ToastrService,
-    private commandeService: CommandeService
+    private commandeService: CommandeService,
+    private threadService: ThreadService,
+    private realtime: RealtimeService
   ) {}
 
   ngOnInit(): void {
@@ -27,7 +41,14 @@ export class ConversationsComponent implements OnInit {
       this.toastr.warning('Veuillez vous connecter');
       return;
     }
+    this.meId = Number(this.me.id || 0);
     this.load();
+    // Subscribe to realtime message stream
+    this.sub = this.realtime.messages$.subscribe(msgs => {
+      this.messages = msgs;
+      this.loadingMessages = false;
+      this.scrollToBottom();
+    });
   }
 
   private load(): void {
@@ -47,10 +68,8 @@ export class ConversationsComponent implements OnInit {
         }
         // Ne jamais inclure les paniers en préparation
         commandes = commandes.filter(c => c.statut !== 'en_preparation');
-        // Côté client: exclure les commandes livrées des conversations
-        if (this.me.role === 'client') {
-          commandes = commandes.filter(c => c.statut !== 'livree');
-        }
+        // Exclure les livrées pour tout le monde (threads inactifs)
+        commandes = commandes.filter(c => c.statut !== 'livree');
 
         const mapped = commandes
           .map(c => {
@@ -65,14 +84,13 @@ export class ConversationsComponent implements OnInit {
           })
           .filter(x => x.clientId);
 
-        // Dédupliquer par client uniquement (une conversation par client)
-        const key = (x: any) => `${x.clientId}`;
-        const unique = new Map<string, any>();
-        for (const it of mapped) {
-          unique.set(key(it), it);
-        }
-        this.items = Array.from(unique.values());
+        // Garder un thread par commande (plus clair)
+        this.items = mapped;
         this.loading = false;
+        // Auto-select first conversation if none selected
+        if (!this.selectedCommandeId && this.items.length > 0) {
+          this.open(this.items[0]);
+        }
       },
       error: (err) => {
         console.error(err);
@@ -82,7 +100,44 @@ export class ConversationsComponent implements OnInit {
     });
   }
 
-  open(it: { clientId: number; employeId: number }) {
-    this.router.navigate(['/chat', it.clientId]);
+  open(it: { id: number; clientId: number; employeId: number }) {
+    // Select the chat thread in-place
+    this.selectedCommandeId = it.id;
+    this.loadingMessages = true;
+    this.realtime.selectThread({ type: 'commande', id: this.selectedCommandeId }, this.meId);
+    // allow DOM to render, then scroll
+    setTimeout(() => this.scrollToBottom(), 50);
+  }
+
+  private loadThread(showSpinner: boolean = true): void {
+    if (!this.selectedCommandeId) return;
+    if (showSpinner) this.loadingMessages = true;
+    this.threadService.getThreadMessages({ type: 'commande', id: this.selectedCommandeId })
+      .subscribe({
+        next: () => { this.loadingMessages = false; },
+        error: () => { this.loadingMessages = false; }
+      });
+  }
+
+  send(): void {
+    const content = this.newMessage?.trim();
+    if (!content || !this.selectedCommandeId) return;
+    this.realtime.send(content)
+      .subscribe({
+        next: () => { this.newMessage = ''; },
+        error: () => { this.toastr.error("Impossible d'envoyer le message"); }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+    this.realtime.stop();
+  }
+
+  private scrollToBottom(): void {
+    try {
+      const el = this.chatBody?.nativeElement;
+      if (el) el.scrollTop = el.scrollHeight;
+    } catch {}
   }
 }

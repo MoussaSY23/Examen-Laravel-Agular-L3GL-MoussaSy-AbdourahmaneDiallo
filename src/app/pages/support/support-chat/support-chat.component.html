@@ -1,0 +1,27 @@
+<div class="support-container">
+  <h2 class="title">Support Client</h2>
+
+  <div id="support-chat-box" class="chat-box">
+    <div *ngFor="let m of messages" class="msg" [ngClass]="{
+      'from-user': m.sender_type === 'user',
+      'from-ai': m.sender_type === 'ai',
+      'from-agent': m.sender_type === 'agent'
+    }">
+      <div class="bubble">
+        <span class="sender" *ngIf="m.sender_type !== 'user'">{{ m.sender_type | uppercase }}</span>
+        <span class="content">{{ m.content }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="typing">
+      L'IA est en train d'écrire...
+    </div>
+  </div>
+
+  <div class="input-row">
+    <input type="text" [(ngModel)]="input" (keyup.enter)="send()" placeholder="Posez votre question..." />
+    <button class="btn" (click)="send()" [disabled]="loading || !input.trim()">Envoyer</button>
+  </div>
+
+  <div class="error" *ngIf="error">{{ error }}</div>
+</div>

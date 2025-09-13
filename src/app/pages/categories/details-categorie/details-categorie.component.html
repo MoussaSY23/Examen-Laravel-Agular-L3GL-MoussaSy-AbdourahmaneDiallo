@@ -1,5 +1,12 @@
 <div class="details-categorie-page bg-slate-50 min-h-screen font-sans text-gray-800">
 
+  <!-- ---------------- Breadcrumb ---------------- -->
+  <nav class="text-sm text-gray-500 px-4 pt-6 max-w-6xl mx-auto">
+    <a routerLink="/" class="hover:underline">Accueil</a> /
+    <a routerLink="/categories" class="hover:underline">Catégories</a> /
+    <span class="font-semibold text-gray-900">{{ categorie?.nom || 'Catégorie' }}</span>
+  </nav>
+
   <!-- ---------------- Bannière ---------------- -->
   <header class="relative overflow-hidden pt-16 pb-24 rounded-b-3xl text-white
                  bg-gradient-to-r from-[#182848] to-[#4b6cb7] shadow-lg">
@@ -16,6 +23,10 @@
         ← Retour aux catégories
       </button>
     </div>
+    <!-- Optionnel : image de fond semi-transparente -->
+    <!-- <div class="absolute inset-0 opacity-10">
+      <img *ngIf="categorie?." [src]="getImageUrl(categorie)" class="w-full h-full object-cover" alt="Image catégorie">
+    </div> -->
   </header>
 
   <!-- ---------------- Attributs de la catégorie ---------------- -->
@@ -23,35 +34,59 @@
     <h2 class="text-2xl font-bold mb-8 text-center text-gray-900">Informations sur la catégorie</h2>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
       <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition">
-        <h3 class="text-lg font-semibold text-[#4b6cb7] mb-2">Nombre de produits</h3>
-        <p class="text-2xl font-bold">{{ produits.length }}</p>
+        <div class="flex flex-col items-center gap-2">
+          <i class="fa-solid fa-layer-group text-3xl text-[#4b6cb7]"></i>
+          <h3 class="text-lg font-semibold text-[#4b6cb7] mb-1">Nombre de produits</h3>
+          <p class="text-2xl font-bold">{{ produits.length }}</p>
+        </div>
       </div>
       <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition">
-        <h3 class="text-lg font-semibold text-[#4b6cb7] mb-2">Actif</h3>
-   
+        <div class="flex flex-col items-center gap-2">
+          <i class="fa-solid fa-check-circle text-3xl text-[#4b6cb7]"></i>
+          <h3 class="text-lg font-semibold text-[#4b6cb7] mb-1">Actif</h3>
+          <p class="text-2xl font-bold">{{ categorie?.actif ? 'Oui' : 'Non' }}</p>
+        </div>
       </div>
       <div class="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition">
-        <h3 class="text-lg font-semibold text-[#4b6cb7] mb-2">Position</h3>
+        <div class="flex flex-col items-center gap-2">
+          <i class="fa-solid fa-sort-amount-down text-3xl text-[#4b6cb7]"></i>
+          <h3 class="text-lg font-semibold text-[#4b6cb7] mb-1">Position</h3>
+          <p class="text-2xl font-bold">{{ categorie?.position }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-      </div>
+  <!-- ---------------- Filtres et tri ---------------- -->
+  <section class="max-w-6xl mx-auto px-4 py-6">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+      <span class="text-gray-700">{{ produits.length }} produits trouvés</span>
+      <select class="border rounded px-3 py-2 text-gray-700">
+        <option value="prix_asc">Prix croissant</option>
+        <option value="prix_desc">Prix décroissant</option>
+        <option value="promotion">En promotion</option>
+      </select>
     </div>
   </section>
 
   <!-- ---------------- Produits ---------------- -->
   <section class="max-w-6xl mx-auto px-4 py-12">
     <h2 class="text-2xl font-bold mb-8 text-gray-900">Produits de cette catégorie</h2>
+
     <div *ngIf="loading" class="text-center py-12 text-gray-500">Chargement…</div>
     <div *ngIf="error" class="text-center py-12 text-red-600">{{ error }}</div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <article *ngFor="let produit of produits"
-               class="relative bg-white rounded-2xl shadow-lg overflow-hidden
-                      transition-all hover:-translate-y-1.5 hover:shadow-2xl cursor-pointer"
+               class="relative bg-white rounded-2xl shadow-md overflow-hidden transition-all hover:-translate-y-1 hover:shadow-2xl cursor-pointer group"
                (click)="goToProduitDetails(produit.id)">
-        <div class="relative h-48">
-          <img class="w-full h-full object-cover" [src]="getImageUrl(produit)" [alt]="produit.nom" />
-          <span class="absolute top-3 -left-2 bg-red-600 text-white font-bold text-xs py-1.5 px-3 rounded-lg shadow-lg -rotate-3"
+        <div class="relative h-48 overflow-hidden">
+          <img class="w-full h-full object-cover rounded-t-2xl transition-transform duration-300 group-hover:scale-105"
+               [src]="getImageUrl(produit)" [alt]="produit.nom" />
+          <span class="absolute top-3 -left-2 bg-red-600 text-white font-bold text-xs py-1.5 px-3 rounded-lg shadow-lg -rotate-3 animate-pulse"
                 *ngIf="produit.en_promotion">Promo</span>
+          <span class="absolute top-3 right-3 bg-green-500 text-white font-bold text-xs py-1.5 px-3 rounded-lg shadow-lg -rotate-3 animate-pulse"
+                *ngIf="produit.stock >= 20">Nouveau</span>
           <span class="absolute bottom-3 right-3 px-3 py-1 text-xs font-semibold rounded-full"
                 [ngClass]="{
                   'bg-green-100 text-green-800': getStatut(produit) === 'En stock',
@@ -59,7 +94,7 @@
                   'bg-red-100 text-red-800': getStatut(produit) === 'Rupture'
                 }">{{ getStatut(produit) }}</span>
         </div>
-        <div class="p-4">
+        <div class="p-4 flex flex-col justify-between h-48">
           <h3 class="text-lg font-bold mb-1">{{ produit.nom }}</h3>
           <div class="flex items-baseline gap-2 mb-2">
             <span class="text-lg font-bold text-red-600" *ngIf="produit.en_promotion">{{ produit.prix_promotion | currency:'XOF' }}</span>
@@ -67,21 +102,29 @@
               {{ produit.prix | currency:'XOF' }}
             </span>
           </div>
-          <div class="text-sm text-gray-600 flex items-center">
+          <div class="text-sm text-gray-600 flex items-center mb-3">
             <i class="fa-solid fa-box-open text-indigo-600 mr-2"></i> {{ produit.stock }} {{ produit.unite || '' }}
+          </div>
+          <div class="opacity-0 group-hover:opacity-100 transition absolute inset-0 flex items-center justify-center bg-black/30">
+            <button class="bg-[#182848] text-white px-4 py-2 rounded-xl font-semibold hover:bg-[#4b6cb7] transition transform hover:scale-105">
+              Ajouter au panier
+            </button>
           </div>
         </div>
       </article>
     </div>
   </section>
 
-  <!-- ---------------- Boutons rapides ---------------- -->
+  <!-- ---------------- Bouton Voir toutes les catégories ---------------- -->
   <div class="text-center my-12">
-    <button class="bg-[#182848] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#4b6cb7] transition"
+    <button class="bg-gradient-to-r from-[#182848] to-[#4b6cb7] text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:scale-105 transition transform"
             routerLink="/categories">Voir toutes les catégories</button>
   </div>
 
+  <!-- ---------------- Footer ---------------- -->
   <footer class="py-8 text-center text-gray-500 text-sm">
-    Application de gestion © {{ currentYear }}
+    Application de gestion © {{ currentYear }} | 
+    <a href="#" class="hover:underline">Contact</a> |
+    <a href="#" class="hover:underline">FAQ</a>
   </footer>
 </div>

@@ -1,11 +1,6 @@
 <div class="chat-wrapper" *ngIf="!loading; else loadingTpl">
   <header class="chat-header">
-    <h3>Messagerie</h3>
-    <div class="participants">
-      <span class="badge">Client #{{ clientId }}</span>
-      <span class="sep">↔</span>
-      <span class="badge blue">Support</span>
-    </div>
+    <h3>Messagerie · Commande #{{ commandeId }}</h3>
   </header>
 
   <section class="chat-body" id="chatBody">

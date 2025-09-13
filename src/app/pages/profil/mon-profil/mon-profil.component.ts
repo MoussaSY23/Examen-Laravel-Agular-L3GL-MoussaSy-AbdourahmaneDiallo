@@ -112,7 +112,7 @@ export class MonProfilComponent implements OnInit {
           if (user) {
             const normalized = this.normalizeUserResponse(user as any);
             this.user = normalized;
-            this.authService.storeUserData(user); // met à jour le BehaviorSubject
+            this.authService.storeUserData(normalized); // met à jour le BehaviorSubject avec un objet normalisé
             this.successMessage = 'Profil mis à jour avec succès !';
             this.errorMessage = '';
             this.editMode = false; // formulaire disparaît
@@ -121,7 +121,7 @@ export class MonProfilComponent implements OnInit {
           }
         },
         error: (err) => {
-          this.errorMessage = err;
+          this.errorMessage = err?.message || 'Une erreur est survenue lors de la mise à jour du profil';
           this.successMessage = '';
         }
       });
@@ -134,7 +134,7 @@ export class MonProfilComponent implements OnInit {
     if (typeof formAvatar === 'string' && formAvatar.startsWith('data:')) return formAvatar;
     const u = this.user?.avatar;
     if (typeof u === 'string' && /^(https?:\/\/|data:)/i.test(u)) return u;
-    return u ? `http://localhost:8000/storage/${u}` : '../../../assets/dfault-avatar.png';
+    return u ? `http://localhost:8000/storage/${u}` : '/assets/default-avatar.png';
   }
 
   cancelEdit(): void {

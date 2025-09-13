@@ -190,10 +190,23 @@ updateProfile(userData: FormData): Observable<User> {
 
 
 
-public storeUserData(user: User | null): void {
-  if (!user) return; // ⚠️ ne rien faire si user invalide
-  this.setStorageItem('currentUser', JSON.stringify(user));
-  this.currentUserSubject.next(user);
+public storeUserData(payload: any): void {
+  if (!payload) return; // ⚠️ ne rien faire si invalide
+  // Accepte soit un objet user direct, soit un wrapper { user: ... }
+  const raw: any = payload?.user ? payload.user : payload;
+  // Normalisation légère (laisser la normalisation avancée au composant si besoin)
+  const normalized: User = {
+    id: raw?.id,
+    name: raw?.name ?? '',
+    email: raw?.email ?? '',
+    role: (raw?.role as any) ?? 'client',
+    telephone: raw?.telephone ?? raw?.phone ?? raw?.tel,
+    adresse: raw?.adresse ?? raw?.address,
+    ville: raw?.ville ?? raw?.city,
+    avatar: raw?.avatar ?? raw?.photo ?? raw?.image
+  };
+  this.setStorageItem('currentUser', JSON.stringify(normalized));
+  this.currentUserSubject.next(normalized);
 }
 
 public getCurrentUser(): User | null {

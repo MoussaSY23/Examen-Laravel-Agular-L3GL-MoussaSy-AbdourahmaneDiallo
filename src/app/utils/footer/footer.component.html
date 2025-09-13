@@ -10,10 +10,10 @@
         <div class="footer-links">
           <div class="footer-column">
             <h3>Navigation</h3>
-            <a href="#">Accueil</a>
-            <a href="#">Services</a>
-            <a href="#">À propos</a>
-            <a href="#">Contact</a>
+            <a routerLink="/">Accueil</a>
+            <a routerLink="/service">Services</a>
+            <a routerLink="/Apropos">À propos</a>
+            <a routerLink="/produits">Produits</a>
           </div>
           
           <div class="footer-column">
@@ -25,15 +25,15 @@
           
           <div class="footer-column">
             <h3>Contact</h3>
-            <p>📞 +221 77 123 45 67</p>
-            <p></p>
-            <p>📍 Dakar, Sénégal</p>
+            <p><i class="bi bi-telephone me-2"></i>+221 77 123 45 67</p>
+            <p><i class="bi bi-envelope me-2"></i></p>
+            <p><i class="bi bi-geo-alt me-2"></i>Dakar, Sénégal</p>
           </div>
         </div>
       </div>
       
       <div class="footer-bottom">
-        <p>© 2023 Boulangerie Artisanale. Tous droits réservés.</p>
+        <p> {{ currentYear }} Boulangerie Artisanale. Tous droits réservés.</p>
       </div>
     </div>
   </footer>

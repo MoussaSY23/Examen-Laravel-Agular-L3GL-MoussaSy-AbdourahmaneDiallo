@@ -12,9 +12,10 @@
       <!-- Admin -->
       <li *ngIf="isAdmin()"><a routerLink="/admin-dashboard">Dashboard</a></li>
       <li *ngIf="isAdmin()"><a routerLink="/produits">Produits</a></li>
-      <li *ngIf="isAdmin()"><a routerLink="/admin/users">Utilisateurs</a></li>
       <li *ngIf="isAdmin()"><a routerLink="/categories">Catégories</a></li>
       <li *ngIf="isAdmin()"><a routerLink="/commandes">Commandes</a></li>
+      <li *ngIf="isAdmin()"><a routerLink="/admin/users">Utilisateurs</a></li>
+
 
       <!-- Employé -->
       <li *ngIf="isEmploye()"><a routerLink="/admin-dashboard">Dashboard</a></li>
@@ -45,6 +46,9 @@
           <span class="badge" *ngIf="unreadCount > 0">!</span>
         </a>
       </li>
+      
+      <!-- Support (tous utilisateurs connectés) -->
+      <li><a routerLink="/support">Support</a></li>
     </ul>
 
     <ng-template #loadingMenu>

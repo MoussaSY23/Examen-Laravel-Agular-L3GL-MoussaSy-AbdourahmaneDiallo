@@ -27,6 +27,7 @@ import { NotFoundComponent } from './utils/not-found/not-found.component';
 import { UsersManagementComponent } from './pages/users/users-management/users-management.component';
 import { ClientDashboardComponent } from './pages/dashboard/client-dashboard/client-dashboard.component';
 import { AddProduitComponent } from './pages/produits/add-produit/add-produit.component';
+import { SupportChatComponent } from './pages/support/support-chat/support-chat.component';
 
 
 
@@ -61,11 +62,10 @@ const routes: Routes = [
   {path: 'panier', component: CommandePanierComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['client'] }},
   {path: 'mes-commandes', component: MesCommandesComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['client'] }},
   {path: 'chat/commande/:commandeId', component: ChatComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin','employee','client'] }},
-  {path: 'chat/:clientId', component: ChatComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin','employee','client'] }},
-  {path: 'chat/:clientId/:employeId', component: ChatComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin','employee','client'] }},
   {path: 'conversations', component: ConversationsComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin','employee','client'] }},
 
   {path: 'admin/users', component: UsersManagementComponent, canActivate: [AuthGuard, roleGuard], data: { roles: ['admin'] }}
+  ,{path: 'support', component: SupportChatComponent}
 ];
 
 @NgModule({

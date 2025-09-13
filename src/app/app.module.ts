@@ -39,6 +39,7 @@ import { FooterComponent } from './utils/footer/footer.component';
 import { UsersManagementComponent } from './pages/users/users-management/users-management.component';
 import { ClientDashboardComponent } from './pages/dashboard/client-dashboard/client-dashboard.component';
 import { AddProduitComponent } from './pages/produits/add-produit/add-produit.component';
+import { SupportChatComponent } from './pages/support/support-chat/support-chat.component';
 
 
 @NgModule({
@@ -71,7 +72,8 @@ import { AddProduitComponent } from './pages/produits/add-produit/add-produit.co
     FooterComponent,
     UsersManagementComponent,
     ClientDashboardComponent,
-    AddProduitComponent
+    AddProduitComponent,
+    SupportChatComponent
   ],
   imports: [
     CommonModule,
